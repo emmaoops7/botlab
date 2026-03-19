@@ -28,7 +28,7 @@ tuya-smart-control 是一个面向 [OpenClaw](https://openclaw.ai) 平台的 AI 
 
 | 用户类型 | 获取地址 |
 |---------|----------|
-| 中国大陆用户 | [smartlife.ai](https://smartlife.ai) |
+| 中国大陆用户 | [smartlife.ai](https://tuyasmart.com/) |
 | 国际用户 | [tuya.ai](https://tuya.ai/) |
 
 > API Key 格式为 `sk-<PREFIX><rest>`，其中前缀用于自动识别数据中心。请确保 API Key 的区域与您的涂鸦账号注册区域匹配。

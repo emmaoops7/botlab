@@ -1,6 +1,7 @@
 ---
 name: tuya-smart-control
 description: >
+  This skill provides OpenClaw users with a streamlined Tuya smart home control experience — no complex developer authentication or authorization flows required. Simply log in to https://tuya.ai to obtain your API Key and get started immediately.
   Tuya smart home device control and services skill. Interact with Tuya Open Platform APIs to manage homes/rooms/devices, control devices (issue Thing Model property commands), rename devices, check weather, send notifications (SMS/voice call/email/App push), and query device statistics.
   Use this skill when the user mentions any of: controlling smart devices (turn on lights, turn off AC, adjust brightness/temperature), querying device status, listing devices in a home or room, renaming a device, checking weather, sending SMS/voice/email/App push notifications, or querying device energy usage or reported data statistics.
   Even if the user does not explicitly mention "Tuya", this skill should be used whenever smart home device operations, IoT device management, or smart home notifications are involved.
@@ -10,7 +11,7 @@ metadata:
       {
         "emoji": "🏠",
         "name": "tuya-smart-control",
-        "description": "Control Tuya smart home devices via Tuya Open API.",
+        "description": "Streamlined Tuya smart home control for OpenClaw users — no complex auth needed, just get your API Key from tuya.ai and start controlling devices.",
         "requires": { "env": ["TUYA_API_KEY"], "pip": ["requests"] },
         "primaryEnv": "TUYA_API_KEY",
         "env": {
@@ -54,7 +55,7 @@ The base URL is automatically resolved from the first two characters after `sk-`
 | SG | Singapore Data Center | https://openapi-sg.iotbing.com |
 
 How to obtain an API key:
-- China Mainland users: Get from https://smartlife.ai
+- China Mainland users: Get from https://tuyasmart.com/
 - International users: Get from https://tuya.ai/
 - Different regions use different API service domains, which must match your account registration region
 
@@ -254,11 +255,6 @@ If the user requests any of these unsupported operations, clearly inform them th
 | Api-key | User-configured base_url | API authentication | Required |
 | Device ID | User-configured base_url | Device query and control | Required |
 | Control commands | User-configured base_url | Device property issuance | Required |
-
-**Security Notes**:
-- Api-key is read from environment variables, never written to logs
-- Data is not sent to any third-party service other than the Tuya Open Platform
-- Use an Api-key with minimum required permissions
 
 ## Important Notes
 

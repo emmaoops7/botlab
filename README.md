@@ -28,7 +28,7 @@ tuya-smart-control is an AI Agent skill for the [OpenClaw](https://openclaw.ai) 
 
 | User Type | Where to Get |
 |-----------|-------------|
-| China Mainland | [smartlife.ai](https://smartlife.ai) |
+| China Mainland | [smartlife.ai](https://tuyasmart.com/) |
 | International | [tuya.ai](https://tuya.ai/) |
 
 > The API Key format is `sk-<PREFIX><rest>`, where the prefix is used to automatically identify the data center. Make sure the API Key region matches your Tuya account registration region.
