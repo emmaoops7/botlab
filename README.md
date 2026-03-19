@@ -1,6 +1,6 @@
-# Tuya Smart Control — OpenClaw Smart Home Skill
+# tuya-smart-control — OpenClaw Smart Home Skill
 
-Tuya Smart Control is an AI Agent skill for the [OpenClaw](https://openclaw.ai) platform, built on the [Tuya Open Platform](https://developer.tuya.com/) 2C End-User API. Once installed, the AI Agent can perform smart home device querying, control, notifications, weather queries, data statistics, and more through natural language.
+tuya-smart-control is an AI Agent skill for the [OpenClaw](https://openclaw.ai) platform, built on the [Tuya Open Platform](https://developer.tuya.com/) 2C End-User API. Once installed, the AI Agent can perform smart home device querying, control, notifications, weather queries, data statistics, and more through natural language.
 
 > **Trial Notice**
 >
@@ -49,7 +49,7 @@ The first two characters after `sk-` in the API Key are automatically mapped to 
 
 ### 3. Install the Skill in OpenClaw
 
-1. Add the `Tuya Smart control` skill on the OpenClaw platform
+1. Add the `tuya-smart-control` skill on the OpenClaw platform
 2. Enter your `TUYA_API_KEY` in the skill configuration (required)
 3. Once installed, the AI Agent automatically gains smart home control capabilities
 
@@ -193,7 +193,7 @@ For these operations, please use the Tuya App directly.
 ## Project Structure
 
 ```
-Tuya Smart control/
+tuya-smart-control/
 ├── SKILL.md                       # OpenClaw Skill definition (with metadata)
 ├── scripts/
 │   └── tuya_api.py                # Python SDK + CLI tool

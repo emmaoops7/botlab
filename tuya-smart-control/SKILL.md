@@ -1,5 +1,5 @@
 ---
-name: Tuya Smart Control
+name: tuya-smart-control
 description: >
   Tuya smart home device control and services skill. Interact with Tuya Open Platform APIs to manage homes/rooms/devices, control devices (issue Thing Model property commands), rename devices, check weather, send notifications (SMS/voice call/email/App push), and query device statistics.
   Use this skill when the user mentions any of: controlling smart devices (turn on lights, turn off AC, adjust brightness/temperature), querying device status, listing devices in a home or room, renaming a device, checking weather, sending SMS/voice/email/App push notifications, or querying device energy usage or reported data statistics.
@@ -9,7 +9,7 @@ metadata:
     "openclaw":
       {
         "emoji": "🏠",
-        "name": "Tuya Smart Control",
+        "name": "tuya-smart-control",
         "description": "Control Tuya smart home devices via Tuya Open API.",
         "requires": { "env": ["TUYA_API_KEY"], "pip": ["requests"] },
         "primaryEnv": "TUYA_API_KEY",
