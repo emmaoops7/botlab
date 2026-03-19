@@ -1,7 +1,6 @@
 # tuya-smart-control — OpenClaw 智能家居控制技能
 
-tuya-smart-control 是一个面向 [OpenClaw](https://openclaw.ai) 平台的 AI Agent 技能，基于 [Tuya Open Platform](https://developer.tuya.com/) 2C End-User API 构建。安装此技能后，AI Agent 即可通过自然语言完成智能家居设备的查询、控制、消息通知、天气查询、数据统计等操作。
-
+tuya-smart-control 是面向 OpenClaw 平台推出的官方 AI Agent 技能，基于涂鸦智能 Tuya 2C 终端用户 API 构建。为开发者带来业界最广泛的 AI+设备交互能力——3,000+ 智能硬件品类、覆盖 200+ 国家和地区，让 AI Agent 开箱即控万物。登录 tuya.ai 一键获取，无需繁琐认证。安装后，即可通过自然语言实现设备查询、智能控制、消息通知、天气查询、数据统计等全场景能力。
 > **试运行声明**
 >
 > 当前所有开放的 API 接口均处于**试运行阶段**，每个接口存在调用次数、调用频率、配额等限制。具体限制信息将陆续更新，请关注本仓库的后续公告。如在使用过程中遇到限流或配额不足的情况，请稍后重试。
@@ -28,7 +27,7 @@ tuya-smart-control 是一个面向 [OpenClaw](https://openclaw.ai) 平台的 AI 
 
 | 用户类型 | 获取地址 |
 |---------|----------|
-| 中国大陆用户 | [smartlife.ai](https://tuyasmart.com/) |
+| 中国大陆用户 | [tuyasmart.com](https://tuyasmart.com/) |
 | 国际用户 | [tuya.ai](https://tuya.ai/) |
 
 > API Key 格式为 `sk-<PREFIX><rest>`，其中前缀用于自动识别数据中心。请确保 API Key 的区域与您的涂鸦账号注册区域匹配。

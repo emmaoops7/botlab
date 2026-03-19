@@ -1,17 +1,14 @@
 ---
 name: tuya-smart-control
 description: >
-  This skill provides OpenClaw users with a streamlined Tuya smart home control experience — no complex developer authentication or authorization flows required. Simply log in to https://tuya.ai to obtain your API Key and get started immediately.
-  Tuya smart home device control and services skill. Interact with Tuya Open Platform APIs to manage homes/rooms/devices, control devices (issue Thing Model property commands), rename devices, check weather, send notifications (SMS/voice call/email/App push), and query device statistics.
-  Use this skill when the user mentions any of: controlling smart devices (turn on lights, turn off AC, adjust brightness/temperature), querying device status, listing devices in a home or room, renaming a device, checking weather, sending SMS/voice/email/App push notifications, or querying device energy usage or reported data statistics.
-  Even if the user does not explicitly mention "Tuya", this skill should be used whenever smart home device operations, IoT device management, or smart home notifications are involved.
+  tuya-smart-control is an official AI Agent skill for the OpenClaw platform, built on Tuya's 2C end-user APIs. It brings developers the industry's broadest AI + device interaction capabilities — 3,000+ smart hardware categories, covering 200+ countries and regions, enabling AI Agents to control everything out of the box. Get started with one click at tuya.ai — no complex authentication required. Once installed, use natural language to query devices, control smart hardware, send notifications, check weather, view data statistics, and more.
 metadata:
   {
     "openclaw":
       {
         "emoji": "🏠",
         "name": "tuya-smart-control",
-        "description": "Streamlined Tuya smart home control for OpenClaw users — no complex auth needed, just get your API Key from tuya.ai and start controlling devices.",
+        "description": "tuya-smart-control is an official AI Agent skill for the OpenClaw platform, built on Tuya's 2C end-user APIs. It brings developers the industry's broadest AI + device interaction capabilities — 3,000+ smart hardware categories, covering 200+ countries and regions, enabling AI Agents to control everything out of the box. Get started with one click at tuya.ai — no complex authentication required. Once installed, use natural language to query devices, control smart hardware, send notifications, check weather, view data statistics, and more.",
         "requires": { "env": ["TUYA_API_KEY"], "pip": ["requests"] },
         "primaryEnv": "TUYA_API_KEY",
         "env": {

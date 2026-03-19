@@ -1,6 +1,6 @@
 # tuya-smart-control — OpenClaw Smart Home Skill
 
-tuya-smart-control is an AI Agent skill for the [OpenClaw](https://openclaw.ai) platform, built on the [Tuya Open Platform](https://developer.tuya.com/) 2C End-User API. Once installed, the AI Agent can perform smart home device querying, control, notifications, weather queries, data statistics, and more through natural language.
+tuya-smart-control is an official AI Agent skill for the OpenClaw platform, built on Tuya's 2C end-user APIs. It brings developers the industry's broadest AI + device interaction capabilities — 3,000+ smart hardware categories, covering 200+ countries and regions, enabling AI Agents to control everything out of the box. Get started with one click at tuya.ai — no complex authentication required. Once installed, use natural language to query devices, control smart hardware, send notifications, check weather, view data statistics, and more.
 
 > **Trial Notice**
 >
@@ -28,7 +28,7 @@ tuya-smart-control is an AI Agent skill for the [OpenClaw](https://openclaw.ai) 
 
 | User Type | Where to Get |
 |-----------|-------------|
-| China Mainland | [smartlife.ai](https://tuyasmart.com/) |
+| China Mainland | [tuyasmart.com](https://tuyasmart.com/) |
 | International | [tuya.ai](https://tuya.ai/) |
 
 > The API Key format is `sk-<PREFIX><rest>`, where the prefix is used to automatically identify the data center. Make sure the API Key region matches your Tuya account registration region.
