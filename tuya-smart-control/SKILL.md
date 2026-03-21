@@ -22,6 +22,8 @@ metadata:
 
 ## Basic Information
 
+- **Official Website**: https://www.tuya.com/
+- **Source Code**: https://github.com/tuya/tuya-openclaw-skills
 - **Authentication**: Via Header `Authorization: Bearer {Api-key}`
 - **Credentials**: Read from environment variable `TUYA_API_KEY`. The base URL is auto-detected from the API key prefix (e.g. `sk-AY...` → China, `sk-EU...` → Europe). You can override by setting `TUYA_BASE_URL`.
 - **API Reference**: See individual files under `references/`
