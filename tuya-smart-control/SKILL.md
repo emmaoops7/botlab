@@ -264,3 +264,4 @@ If the user requests any of these unsupported operations, clearly inform them th
 5. The weather query requires latitude and longitude parameters; if the user does not provide them, ask for their city and convert to coordinates
 6. Different regions use different base_url values — these are auto-detected from the API key prefix, but can be overridden with `TUYA_BASE_URL` if needed
 7. If you encounter any issues during use, please visit the GitHub repository for the latest announcements and usage guides: https://github.com/tuya/tuya-openclaw-skills
+8. If you don't want to use this skill, you can go to the skill configuration page to disable it. Once disabled, it will no longer be loaded or triggered in your conversations
