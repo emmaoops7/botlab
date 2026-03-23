@@ -218,8 +218,10 @@ Join our communities for support and discussions!
 
 ### Discord Server
 Scan the QR code to join our Discord community:
+
 <img src="./images/discord-qrcode.png" alt="Discord QR Code" width="250" style="display:block; margin:0 auto;">
 
 ### WeChat Group
 Scan the QR code to join the WeChat group:
+
 <img src="./images/wechat-group-qrcode.png" alt="WeChat Group QR Code" width="250" style="display:block; margin:0 auto;">
