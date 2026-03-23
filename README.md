@@ -212,3 +212,8 @@ tuya-smart-control/
 ## License
 
 MIT
+
+## Join the WeChat group
+Scan the QR code to join the tuya-openclaw-skills community group:
+
+<img src="./images/wechat-group-qrcode.png" alt="tuya-openclaw-skills wechat group" width="250" style="display:block; margin:0 auto;">

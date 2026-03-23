@@ -211,3 +211,10 @@ tuya-smart-control/
 ## License
 
 MIT
+
+## 加入微信讨论群
+扫码加入tuya-openclaw-skills技能交流群：
+
+<!-- 微信二维码：控制宽度+居中显示，提升美观度 -->
+<img src="./images/wechat-group-qrcode.png" alt="tuya-openclaw-skills微信交流群" width="250" style="display:block; margin:0 auto;">
+
