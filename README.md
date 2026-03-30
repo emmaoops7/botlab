@@ -97,7 +97,7 @@ result = api.issue_properties("your_device_id", {
 })
 
 # Query weather
-weather = api.get_weather(lat="39.9042", lon="116.4074")
+weather = api.get_weather(lat="39.90", lon="116.40")
 
 # Send SMS notification
 api.send_sms("Alert: Living room light is offline")
