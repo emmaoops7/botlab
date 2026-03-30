@@ -87,7 +87,7 @@ detail = api.get_device_detail("0620068884f3eb414579")
 result = api.issue_properties("0620068884f3eb414579", {"switch_led": True, "bright_value": 500})
 
 # Query weather
-weather = api.get_weather(lat="39.9042", lon="116.4074")
+weather = api.get_weather(lat="39.90", lon="116.40")
 ```
 
 ### Method 2: Via Command Line
