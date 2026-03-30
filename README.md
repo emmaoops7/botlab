@@ -122,7 +122,7 @@ python3 tuya_api.py control <device_id> '{"switch_led":true,"bright_value":500}'
 python3 tuya_api.py rename <device_id> "New Name"
 
 # Weather
-python3 tuya_api.py weather 39.9042 116.4074
+python3 tuya_api.py weather 39.90 116.40
 
 # Notifications
 python3 tuya_api.py sms "Reminder message"
