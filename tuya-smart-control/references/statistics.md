@@ -36,7 +36,7 @@ GET /v1.0/end-user/statistics/hour/config
 | dev_id | String | Device ID |
 | dp_id | Integer | Data point ID |
 | dp_code | String | Data point code |
-| statistic_type | String | Statistic type: SUM (sum), COUNT (count), MAX (maximum), MIN (minimum), MINUX, etc. |
+| statistic_type | String | Statistic type: SUM (sum), COUNT (count), MAX (maximum), MIN (minimum) |
 | interval | String | Statistics interval, fixed as "hour" |
 
 ---
@@ -61,7 +61,7 @@ GET /v1.0/end-user/statistics/hour/data
 | start_time | String | Yes | Start time, format: `yyyyMMddHH` (e.g. `2024010110`) |
 | end_time | String | Yes | End time, format: `yyyyMMddHH` (e.g. `2024010123`) |
 
-> The time range from start_time to end_time cannot exceed 24 hours.
+> The time range from start_time to end_time cannot exceed 24 hours, and `end_time` must be later than or equal to `start_time`.
 
 **Request Example**
 
@@ -93,3 +93,7 @@ The return value is an array where each element is a key-value pair:
 1. First call the "Statistics Configuration Query" to confirm which statistics items are available for the device (dp_code + statistic_type)
 2. Then use the dp_code and statistic_type from the configuration to call this API for the actual data
 3. If you need statistics spanning more than 24 hours, make multiple requests and aggregate the results yourself
+4. For CLI usage, `start_time` and `end_time` are pre-validated locally before sending the request:
+   - Must follow `yyyyMMddHH`
+   - Must satisfy `end_time >= start_time`
+   - Must not exceed 24 hours

@@ -22,6 +22,8 @@ GET /v1.0/end-user/services/weather/recent
 GET /v1.0/end-user/services/weather/recent?codes=["w.temp","w.humidity","w.condition","w.hour.7"]&lat=39.9042&lon=116.4074
 ```
 
+> When constructing URLs manually, the `codes` value must be URL-encoded (e.g. `%5B%22w.temp%22%5D`). The Python SDK handles encoding automatically.
+
 ## Response Example
 
 ```json

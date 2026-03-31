@@ -102,7 +102,7 @@ GET /v1.0/end-user/devices/{device_id}/model
 { "type": "value", "min": 0, "max": 100, "step": 1, "unit": "%", "scale": 0 }
 ```
 
-- `scale`: Decimal multiplier. Actual value = input value / 10^scale
+- `scale`: Decimal multiplier. Actual value = input value / 10^scale. Example: if `scale` is `1` and raw value is `255`, actual value = 255 / 10^1 = 25.5
 
 **bool (boolean)**
 
@@ -165,7 +165,7 @@ POST /v1.0/end-user/devices/{device_id}/shadow/properties/issue
 
 ```json
 {
-  "properties": "{\"switch_led\": true, \"brightness\": 80}"
+  "properties": "{\"switch_led\": true, \"bright_value\": 500}"
 }
 ```
 

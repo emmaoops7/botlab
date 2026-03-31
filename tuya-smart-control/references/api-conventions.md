@@ -1,17 +1,5 @@
 # API Conventions
 
-## Environment Variable Configuration
-
-Set the following environment variable before use:
-
-```bash
-export TUYA_API_KEY="your-tuya-api-key"
-# TUYA_BASE_URL is optional — auto-detected from API key prefix
-# Override only if needed: export TUYA_BASE_URL="https://openapi.tuyaus.com"
-```
-
-The skill will not load if the `TUYA_API_KEY` environment variable is missing.
-
 ## API Key Prefix → Data Center Mapping
 
 The base URL is automatically resolved from the first two characters after `sk-` in the API key:
@@ -67,3 +55,4 @@ APIs return a unified structure:
 - When `success` is `true`, the result is in the `result` field
 - When `success` is `false`, error details are in the `code` and `msg` fields
 - The Python SDK automatically checks `success` and raises `TuyaAPIError` on failure
+- HTTP 429 and transient 5xx responses are retried automatically with backoff

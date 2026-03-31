@@ -38,7 +38,7 @@ GET /v1.0/end-user/homes/all
 |-------|------|-------------|
 | home_id | String | Home ID |
 | name | String | Home name |
-| role | String | User's role in this home (owner, admin, etc.) |
+| role | String | User's role in this home. Values: `owner` (home creator), `admin` (administrator), `member` (regular member) |
 | create_time | Long | Creation time (Unix timestamp in seconds) |
 | latitude | Object | Home latitude (optional). Format: `{"Value": "30.3"}`. Only returned when the home has location set. Can be used as the `lat` parameter for the Weather Query API |
 | longitude | Object | Home longitude (optional). Format: `{"Value": "120.07"}`. Only returned when the home has location set. Can be used as the `lon` parameter for the Weather Query API |

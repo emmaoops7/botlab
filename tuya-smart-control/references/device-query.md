@@ -211,3 +211,5 @@ GET /v1.0/end-user/devices/{device_id}/detail
 | properties | Map\<String, Object\> | Current values of the device's functional properties. Keys are property codes (dp codes), values are current values | {} |
 
 > The `properties` field allows you to directly read the device's current state without making a separate Thing Model query. Property codes (keys) correspond to the `code` field of properties in the Thing Model. Value types depend on the `typeSpec` definition of each property (bool returns true/false, value returns a number, enum returns an enum string, etc.).
+
+> All device list APIs return the full set of devices in a single response (no pagination). The `total` field indicates the total device count.

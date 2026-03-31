@@ -1,7 +1,7 @@
 ---
 name: tuya-smart-control
-description: Control Tuya smart home devices via natural language. Use when the user asks to control smart devices (turn on/off lights, AC, plugs, adjust brightness/temperature/mode), query device status or list devices, manage homes and rooms, check weather by location, send notifications (SMS, voice call, email, or App push), or view device data statistics (e.g. energy consumption). Supports 3,000+ device categories across 200+ countries. Requires TUYA_API_KEY environment variable.
-metadata: { "openclaw": { "emoji": "🏠", "requires": { "env": ["TUYA_API_KEY"], "pip": ["requests>=2.28.0"] }, "primaryEnv": "TUYA_API_KEY" } }
+description: Control Tuya smart home devices via natural language. Use when the user asks to control smart devices (turn on/off lights, AC, plugs, adjust brightness/temperature/mode), query device status or list devices, manage homes and rooms, rename devices, check weather by location, send notifications (SMS, voice call, email, or App push), or view device data statistics (e.g. energy/power consumption). Requires TUYA_API_KEY.
+metadata: { "openclaw": { "version": "1.0.0", "emoji": "🏠", "requires": { "env": ["TUYA_API_KEY"], "pip": ["requests>=2.28.0"] }, "primaryEnv": "TUYA_API_KEY" } }
 ---
 
 # Tuya Smart Home Device Control Skill
@@ -14,6 +14,18 @@ metadata: { "openclaw": { "emoji": "🏠", "requires": { "env": ["TUYA_API_KEY"]
 - **Credentials**: Read from environment variable `TUYA_API_KEY`. Base URL is auto-detected from API key prefix. See `references/api-conventions.md` for the prefix-to-region mapping table. You can override by setting `TUYA_BASE_URL`.
 - **API Reference**: See individual files under `references/`
 - **Python SDK**: See `scripts/tuya_api.py`
+
+## Environment Variable Configuration
+
+Set the following environment variable before use:
+
+```bash
+export TUYA_API_KEY="your-tuya-api-key"
+# TUYA_BASE_URL is optional — auto-detected from API key prefix
+# Override only if needed: export TUYA_BASE_URL="https://openapi.tuyaus.com"
+```
+
+The skill will not load if the `TUYA_API_KEY` environment variable is missing.
 
 ## Usage
 
@@ -40,6 +52,13 @@ python3 {baseDir}/scripts/tuya_api.py push "Subject" "Content"
 python3 {baseDir}/scripts/tuya_api.py stats_config
 python3 {baseDir}/scripts/tuya_api.py stats_data <dev_id> <dp_code> <type> <start> <end>
 ```
+
+CLI validation rules:
+- `devices` supports only one scope flag at a time: `--home <id>` or `--room <id>`
+- `control` requires `properties_json` to be a valid JSON object (not array/string)
+- `weather` validates coordinate range: latitude `[-90, 90]`, longitude `[-180, 180]`
+- `stats_data` validates `start`/`end` format `yyyyMMddHH` and max 24-hour window
+- Use `python3 {baseDir}/scripts/tuya_api.py --help` for command help and examples
 
 ### Method 2: Via Python SDK
 
@@ -160,23 +179,17 @@ When the user says things like "turn on the living room light" or "set the AC te
 
 When the user asks "Is the living room light on?" or "What's the AC set to?":
 
-1. Locate the device (same as Workflow 1 Step 1)
-2. Call "Get Single Device Detail" API
-3. If `result` is `null` — inform the user the device was not found
-4. If `online` is `false` — inform the user the device is offline
-5. Read `properties` values, cross-reference with the Thing Model property names/descriptions, and translate to natural language (e.g. `"switch_led": true` → "the light is currently on")
+1. Locate the device and get current state (same as Workflow 1 Steps 1-2; stop if device not found or offline)
+2. Read `properties` values, cross-reference with the Thing Model property names/descriptions, and translate to natural language (e.g. `"switch_led": true` → "the light is currently on")
 
 ### Workflow 7: Multi-Device Batch Control
 
 When the user says "Turn off all lights" or "Set all ACs to 26 degrees":
 
-1. Call "List All Devices" API
-2. Filter matching devices by `category_name` or device `name` keyword
-3. For each matching device:
-   - Check `online` status — skip offline devices and note them
-   - Execute Workflow 1 Steps 3-6
-4. Aggregate results: report how many devices succeeded, which ones failed or were offline
-5. When controlling multiple devices in sequence, add a brief delay (0.5-1s) between requests to avoid rate limiting
+1. Call "List All Devices" API and filter matching devices by `category_name` or device `name` keyword
+2. For each matching device: check `online` status (skip offline devices and note them), then execute Workflow 1 Steps 3-6
+3. Aggregate results: report how many devices succeeded, which ones failed or were offline
+4. Add a brief delay (0.5-1s) between requests to avoid rate limiting
 
 ## Important Notes
 
@@ -187,9 +200,7 @@ When the user says "Turn off all lights" or "Set all ACs to 26 degrees":
 5. Base URL is auto-detected from API key prefix. See `references/api-conventions.md` for details
 6. If you encounter issues, visit https://github.com/tuya/tuya-openclaw-skills for announcements and troubleshooting
 7. Never log or display the `TUYA_API_KEY` value in output
-8. Validate property values against the Thing Model `typeSpec` before issuing commands (e.g. brightness must be within min-max range)
-9. When controlling multiple devices in sequence, add a brief delay between requests to avoid rate limiting
-10. See the "Supported and Unsupported Operations" section above for operations that are not available
+8. CLI exits with code `2` for usage/validation errors, and `1` for runtime/API/network errors
 
 ## Supported and Unsupported Operations
 
