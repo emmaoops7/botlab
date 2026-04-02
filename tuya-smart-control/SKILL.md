@@ -1,6 +1,6 @@
 ---
 name: tuya-smart-control
-description: Control Tuya smart home devices via natural language. Use when the user asks to control smart devices (turn on/off lights, AC, plugs, adjust brightness/temperature/mode), query device status or list devices, manage homes and rooms, rename devices, check weather by location, send notifications (SMS, voice call, email, or App push), or view device data statistics (e.g. energy/power consumption). Requires TUYA_API_KEY.
+description: Control Tuya smart home devices via natural language. Use when the user asks to control smart devices (turn on/off lights, AC, plugs, adjust brightness/temperature/mode), query device status or list devices, manage homes and rooms, rename devices, check weather by location, send notifications (SMS, voice call, email, or App push), view device data statistics (e.g. energy/power consumption), or capture snapshots/short videos from IPC cameras. Requires TUYA_API_KEY.
 metadata: { "openclaw": { "version": "1.0.0", "emoji": "🏠", "requires": { "env": ["TUYA_API_KEY"], "pip": ["requests>=2.28.0"] }, "primaryEnv": "TUYA_API_KEY" } }
 ---
 
@@ -51,6 +51,8 @@ python3 {baseDir}/scripts/tuya_api.py mail "Subject" "Content"
 python3 {baseDir}/scripts/tuya_api.py push "Subject" "Content"
 python3 {baseDir}/scripts/tuya_api.py stats_config
 python3 {baseDir}/scripts/tuya_api.py stats_data <dev_id> <dp_code> <type> <start> <end>
+python3 {baseDir}/scripts/tuya_api.py ipc_pic_fetch <device_id> <consent> [pic_count] [home_id]
+python3 {baseDir}/scripts/tuya_api.py ipc_video_fetch <device_id> <duration> <consent> [home_id]
 ```
 
 CLI validation rules:
@@ -58,6 +60,8 @@ CLI validation rules:
 - `control` requires `properties_json` to be a valid JSON object (not array/string)
 - `weather` validates coordinate range: latitude `[-90, 90]`, longitude `[-180, 180]`
 - `stats_data` validates `start`/`end` format `yyyyMMddHH` and max 24-hour window
+- `ipc_pic_fetch` args: `<device_id> <consent> [pic_count] [home_id]` — consent `1` = decrypted URL
+- `ipc_video_fetch` args: `<device_id> <duration> <consent> [home_id]` — duration in seconds (1-60)
 - Use `python3 {baseDir}/scripts/tuya_api.py --help` for command help and examples
 
 ### Method 2: Via Python SDK
@@ -76,6 +80,8 @@ devices = api.get_all_devices()
 detail = api.get_device_detail("device_id_here")
 result = api.issue_properties("device_id_here", {"switch_led": True, "bright_value": 500})
 weather = api.get_weather(lat="39.90", lon="116.40")
+# IPC cloud capture — take a snapshot and get decrypted URL
+capture = api.ipc_ai_capture_pic_allocate_and_fetch("device_id_here", user_privacy_consent_accepted=True)
 ```
 
 ## Feature Overview
@@ -89,6 +95,7 @@ weather = api.get_weather(lat="39.90", lon="116.40")
 | Weather Service | Current and forecast weather | `references/weather.md` |
 | Notifications | SMS, voice call, email, App push | `references/notifications.md` |
 | Data Statistics | Hourly statistics config query, statistics value query | `references/statistics.md` |
+| IPC Cloud Capture | Cloud snapshot and short video capture for IPC cameras | `references/ipc-cloud-capture.md` |
 | Error Handling | Error codes and recovery strategies | `references/error-handling.md` |
 | API Conventions | Request/response format, data center mapping | `references/api-conventions.md` |
 
@@ -191,6 +198,24 @@ When the user says "Turn off all lights" or "Set all ACs to 26 degrees":
 3. Aggregate results: report how many devices succeeded, which ones failed or were offline
 4. Add a brief delay (0.5-1s) between requests to avoid rate limiting
 
+### Workflow 8: IPC Cloud Capture
+
+When the user asks to "take a photo with the camera" or "record a short video from the camera":
+
+1. **Locate the IPC device** — same as Workflow 1 Step 1, filter by camera category
+2. **Determine capture type**:
+   - Snapshot → `PIC` (optional `pic_count`, 1-5)
+   - Short video → `VIDEO` (optional `video_duration_seconds`, 1-60, default 10)
+3. **Privacy consent** — Only set `user_privacy_consent_accepted=true` when the user has explicitly agreed to receive decrypted playable URLs. Default to `true` unless the user declines
+4. **Execute capture** — Use the all-in-one helper methods:
+   - For PIC: `api.ipc_ai_capture_pic_allocate_and_fetch(device_id, user_privacy_consent_accepted=True, pic_count=1)`
+   - For VIDEO: `api.ipc_ai_capture_video_allocate_and_fetch(device_id, video_duration_seconds=5, user_privacy_consent_accepted=True)`
+   - These methods handle the full allocate → wait → poll → retry flow automatically
+5. **Return the result** — Extract the URL from the resolve result:
+   - PIC with consent: `resolve["decrypt_image_url"]`
+   - VIDEO with consent: `resolve["decrypt_video_url"]` (cover image may be null if still uploading)
+   - If `status` is still `NOT_READY` after all retries, inform the user that the device may be slow to upload and suggest trying again later
+
 ## Important Notes
 
 1. Device name matching uses fuzzy matching; when multiple results are found, ask the user to confirm
@@ -220,7 +245,7 @@ Only basic data type properties are currently supported for device control:
 The following operations involve sensitive actions or complex data types and are **NOT supported**:
 
 - **Lock control** — Unlock doors, lock/unlock smart locks (security-sensitive)
-- **Video/camera operations** — Pull live video streams, view camera footage, capture screenshots
+- **Live video streaming** — Pull real-time video streams or view camera live footage (cloud snapshot/short video capture IS supported — see Workflow 8)
 - **Image operations** — Retrieve or push images from/to devices
 - **Complex data type control** — Properties with `raw`, `bitmap`, `struct`, or `array` typeSpec are not supported for issuing commands
 - **Firmware upgrades** — OTA firmware update operations

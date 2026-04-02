@@ -19,6 +19,7 @@ tuya-smart-control is an official AI Agent skill for the OpenClaw platform, buil
 | Weather Service | Current weather and hourly forecast | Temperature, humidity, conditions, and more |
 | Notifications | SMS, voice call, email, App push | Self-send only (to the current logged-in user) |
 | Data Statistics | Hourly statistics config and data query | Energy usage and other metric analysis |
+| IPC Cloud Capture | Cloud snapshot and short video capture | Capture images/videos from IPC cameras and get playable URLs |
 
 ---
 
@@ -71,6 +72,8 @@ After the skill is installed, users can interact with the AI Agent using natural
 - "Send me an SMS reminder"
 - "Rename the bedroom light to bedside lamp"
 - "Check this month's electricity usage"
+- "Take a snapshot from the front door camera"
+- "Record a 5-second video from the living room camera"
 
 ### Python SDK
 
@@ -101,6 +104,12 @@ weather = api.get_weather(lat="39.90", lon="116.40")
 
 # Send SMS notification
 api.send_sms("Alert: Living room light is offline")
+
+# IPC cloud capture — take a snapshot and get decrypted URL
+capture = api.ipc_ai_capture_pic_allocate_and_fetch("your_device_id", user_privacy_consent_accepted=True)
+
+# IPC cloud capture — record a 5-second video
+video = api.ipc_ai_capture_video_allocate_and_fetch("your_device_id", video_duration_seconds=5, user_privacy_consent_accepted=True)
 ```
 
 ### Command-Line Tool
@@ -133,6 +142,10 @@ python3 tuya_api.py push "Push Title" "Push content"
 # Data Statistics
 python3 tuya_api.py stats_config                       # Query statistics config
 python3 tuya_api.py stats_data <dev_id> ele_usage SUM 2026031600 2026031623
+
+# IPC Cloud Capture
+python3 tuya_api.py ipc_pic_fetch <device_id> 1              # Snapshot (consent=1 for decrypted URL)
+python3 tuya_api.py ipc_video_fetch <device_id> 5 1           # 5-second video (consent=1)
 ```
 
 ---
@@ -161,6 +174,8 @@ For complete request parameters, response fields, and examples, see the document
 | Notifications | Send App push | POST | `/v1.0/end-user/services/push/self-send` | [notifications.md](Tuya%20Smart%20control/references/notifications.md) |
 | Data Statistics | Query statistics config | GET | `/v1.0/end-user/statistics/hour/config` | [statistics.md](Tuya%20Smart%20control/references/statistics.md) |
 | Data Statistics | Query statistics data | GET | `/v1.0/end-user/statistics/hour/data` | [statistics.md](Tuya%20Smart%20control/references/statistics.md) |
+| IPC Cloud Capture | Allocate cloud capture | POST | `/v1.0/end-user/ipc/{device_id}/capture/allocate` | [ipc-cloud-capture.md](Tuya%20Smart%20control/references/ipc-cloud-capture.md) |
+| IPC Cloud Capture | Resolve capture URL | POST | `/v1.0/end-user/ipc/{device_id}/capture/resolve` | [ipc-cloud-capture.md](Tuya%20Smart%20control/references/ipc-cloud-capture.md) |
 
 ---
 
@@ -180,7 +195,7 @@ For complete request parameters, response fields, and examples, see the document
 The following operations involve sensitive permissions or complex data types and are **not supported**:
 
 - **Lock control** — Unlock doors, lock/unlock smart locks (security-sensitive)
-- **Video/Camera** — Pull live video streams, view recordings, capture screenshots
+- **Live video streaming** — Pull real-time video streams or view live camera footage (cloud snapshot/short video capture IS supported)
 - **Image operations** — Upload or download device images
 - **Complex data type control** — Properties with `raw`, `bitmap`, `struct`, or `array` typeSpec
 - **Firmware upgrades** — OTA firmware update operations
@@ -204,7 +219,8 @@ tuya-smart-control/
     ├── device-management.md       # Device management
     ├── weather.md                 # Weather service
     ├── notifications.md           # Notifications
-    └── statistics.md              # Data statistics
+    ├── statistics.md              # Data statistics
+    └── ipc-cloud-capture.md       # IPC cloud capture
 ```
 
 ---

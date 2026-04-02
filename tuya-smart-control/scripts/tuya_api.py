@@ -13,6 +13,7 @@ import json
 import os
 import sys
 import re
+import time
 from datetime import datetime
 import requests
 from requests.adapters import HTTPAdapter
@@ -37,6 +38,7 @@ _COMMAND_ARG_COUNT = {
     "device_detail": 1, "model": 1, "sms": 1, "voice": 1,
     "control": 2, "rename": 2, "mail": 2, "push": 2,
     "weather": 2, "stats_data": 5,
+    "ipc_pic_fetch": 2, "ipc_video_fetch": 3,
 }
 
 _KNOWN_FLAGS = {
@@ -267,6 +269,233 @@ class TuyaAPI:
             },
         )
 
+    # ─── IPC Cloud Capture ───
+
+    def ipc_ai_capture_allocate(self, device_id: str, capture_type: str,
+                                pic_count: int = None,
+                                video_duration_seconds: int = None,
+                                home_id: str = None) -> dict:
+        """Allocate a cloud capture (snapshot or short video).
+
+        Args:
+            device_id: Device ID
+            capture_type: "PIC" for snapshot, "VIDEO" for short video
+            pic_count: Number of snapshots (1-5, PIC only)
+            video_duration_seconds: Video duration in seconds (1-60, VIDEO only)
+            home_id: Optional home ID
+        """
+        capture_params = {
+            "device_id": device_id,
+            "capture_type": capture_type,
+        }
+        if pic_count is not None:
+            capture_params["pic_count"] = pic_count
+        if video_duration_seconds is not None:
+            capture_params["video_duration_seconds"] = video_duration_seconds
+        if home_id is not None:
+            capture_params["home_id"] = home_id
+        return self._post(
+            f"/v1.0/end-user/ipc/{device_id}/capture/allocate",
+            data={"capture_json": json.dumps(capture_params)},
+        )
+
+    def ipc_ai_capture_resolve(self, device_id: str, capture_type: str,
+                               bucket: str, image_object_key: str = None,
+                               video_object_key: str = None,
+                               cover_image_object_key: str = None,
+                               encryption_key: str = None,
+                               user_privacy_consent_accepted: bool = None,
+                               home_id: str = None) -> dict:
+        """Resolve capture access URL.
+
+        Args:
+            device_id: Device ID
+            capture_type: "PIC" or "VIDEO"
+            bucket: Bucket from allocate response
+            image_object_key: Image object key (required for PIC)
+            video_object_key: Video object key (required for VIDEO)
+            cover_image_object_key: Cover image key (VIDEO only)
+            encryption_key: Encryption key from allocate
+            user_privacy_consent_accepted: True for decrypted URLs
+            home_id: Optional home ID
+        """
+        resolve_params = {
+            "device_id": device_id,
+            "capture_type": capture_type,
+            "bucket": bucket,
+        }
+        if image_object_key is not None:
+            resolve_params["image_object_key"] = image_object_key
+        if video_object_key is not None:
+            resolve_params["video_object_key"] = video_object_key
+        if cover_image_object_key is not None:
+            resolve_params["cover_image_object_key"] = cover_image_object_key
+        if encryption_key is not None:
+            resolve_params["encryption_key"] = encryption_key
+        if user_privacy_consent_accepted is not None:
+            resolve_params["user_privacy_consent_accepted"] = user_privacy_consent_accepted
+        if home_id is not None:
+            resolve_params["home_id"] = home_id
+        return self._post(
+            f"/v1.0/end-user/ipc/{device_id}/capture/resolve",
+            data={"resolve_json": json.dumps(resolve_params)},
+        )
+
+    def ipc_ai_capture_pic_resolve_with_wait(
+            self, device_id: str, allocate_result: dict,
+            user_privacy_consent_accepted: bool = True,
+            home_id: str = None,
+            poll_timeout: int = 30, retry_count: int = 3) -> dict:
+        """Wait, poll, and retry resolve for a PIC capture.
+
+        Args:
+            device_id: Device ID
+            allocate_result: Result dict from ipc_ai_capture_allocate
+            user_privacy_consent_accepted: True for decrypted URLs
+            home_id: Optional home ID
+            poll_timeout: Polling timeout in seconds (default 30)
+            retry_count: Extra retries after timeout (default 3)
+        """
+        bucket = allocate_result["bucket"]
+        image_object_key = allocate_result["image_object_key"]
+        encryption_key = allocate_result.get("encryption_key")
+
+        # Initial wait before first resolve
+        time.sleep(2)
+
+        # Poll every ~2 seconds until timeout
+        elapsed = 0
+        while elapsed < poll_timeout:
+            result = self.ipc_ai_capture_resolve(
+                device_id, "PIC", bucket,
+                image_object_key=image_object_key,
+                encryption_key=encryption_key,
+                user_privacy_consent_accepted=user_privacy_consent_accepted,
+                home_id=home_id,
+            )
+            if result.get("status") != "NOT_READY":
+                return result
+            time.sleep(2)
+            elapsed += 2
+
+        # Retry up to retry_count times at 3-second intervals
+        for _ in range(retry_count):
+            time.sleep(3)
+            result = self.ipc_ai_capture_resolve(
+                device_id, "PIC", bucket,
+                image_object_key=image_object_key,
+                encryption_key=encryption_key,
+                user_privacy_consent_accepted=user_privacy_consent_accepted,
+                home_id=home_id,
+            )
+            if result.get("status") != "NOT_READY":
+                return result
+
+        return result
+
+    def ipc_ai_capture_pic_allocate_and_fetch(
+            self, device_id: str,
+            user_privacy_consent_accepted: bool = True,
+            pic_count: int = None, home_id: str = None) -> dict:
+        """Allocate a PIC capture then automatically wait and resolve.
+
+        Args:
+            device_id: Device ID
+            user_privacy_consent_accepted: True for decrypted URLs
+            pic_count: Number of snapshots (1-5)
+            home_id: Optional home ID
+        """
+        allocate_result = self.ipc_ai_capture_allocate(
+            device_id, "PIC", pic_count=pic_count, home_id=home_id,
+        )
+        resolve_result = self.ipc_ai_capture_pic_resolve_with_wait(
+            device_id, allocate_result,
+            user_privacy_consent_accepted=user_privacy_consent_accepted,
+            home_id=home_id,
+        )
+        return {"allocate": allocate_result, "resolve": resolve_result}
+
+    def ipc_ai_capture_video_resolve_with_wait(
+            self, device_id: str, allocate_result: dict,
+            user_privacy_consent_accepted: bool = True,
+            home_id: str = None,
+            poll_timeout: int = 120, retry_count: int = 3) -> dict:
+        """Wait, poll, and retry resolve for a VIDEO capture.
+
+        Args:
+            device_id: Device ID
+            allocate_result: Result dict from ipc_ai_capture_allocate
+            user_privacy_consent_accepted: True for decrypted URLs
+            home_id: Optional home ID
+            poll_timeout: Polling timeout in seconds (default 120)
+            retry_count: Extra retries after timeout (default 3)
+        """
+        bucket = allocate_result["bucket"]
+        video_object_key = allocate_result["video_object_key"]
+        cover_image_object_key = allocate_result.get("cover_image_object_key")
+        encryption_key = allocate_result.get("encryption_key")
+        effective_duration = allocate_result.get(
+            "video_duration_seconds_effective", 10)
+
+        # Minimum wait: max(5, effective_duration) + 2
+        initial_wait = max(5, effective_duration) + 2
+        time.sleep(initial_wait)
+
+        # Poll every ~2 seconds until timeout
+        elapsed = 0
+        while elapsed < poll_timeout:
+            result = self.ipc_ai_capture_resolve(
+                device_id, "VIDEO", bucket,
+                video_object_key=video_object_key,
+                cover_image_object_key=cover_image_object_key,
+                encryption_key=encryption_key,
+                user_privacy_consent_accepted=user_privacy_consent_accepted,
+                home_id=home_id,
+            )
+            if result.get("status") != "NOT_READY":
+                return result
+            time.sleep(2)
+            elapsed += 2
+
+        # Retry up to retry_count times at 5-second intervals
+        for _ in range(retry_count):
+            time.sleep(5)
+            result = self.ipc_ai_capture_resolve(
+                device_id, "VIDEO", bucket,
+                video_object_key=video_object_key,
+                cover_image_object_key=cover_image_object_key,
+                encryption_key=encryption_key,
+                user_privacy_consent_accepted=user_privacy_consent_accepted,
+                home_id=home_id,
+            )
+            if result.get("status") != "NOT_READY":
+                return result
+
+        return result
+
+    def ipc_ai_capture_video_allocate_and_fetch(
+            self, device_id: str, video_duration_seconds: int = 10,
+            user_privacy_consent_accepted: bool = True,
+            home_id: str = None) -> dict:
+        """Allocate a VIDEO capture then automatically wait and resolve.
+
+        Args:
+            device_id: Device ID
+            video_duration_seconds: Video duration in seconds (1-60, default 10)
+            user_privacy_consent_accepted: True for decrypted URLs
+            home_id: Optional home ID
+        """
+        allocate_result = self.ipc_ai_capture_allocate(
+            device_id, "VIDEO",
+            video_duration_seconds=video_duration_seconds, home_id=home_id,
+        )
+        resolve_result = self.ipc_ai_capture_video_resolve_with_wait(
+            device_id, allocate_result,
+            user_privacy_consent_accepted=user_privacy_consent_accepted,
+            home_id=home_id,
+        )
+        return {"allocate": allocate_result, "resolve": resolve_result}
+
 
 # ─── Command-Line Mode ───
 
@@ -388,12 +617,16 @@ def _print_help():
     print("  push <subject> <content>               Send push notification")
     print("  stats_config                           Query statistics config")
     print("  stats_data <dev_id> <dp_code> <type> <start> <end>  Query statistics")
+    print("  ipc_pic_fetch <device_id> <consent> [pic_count] [home_id]  Capture and fetch IPC snapshot")
+    print("  ipc_video_fetch <device_id> <duration> <consent> [home_id]  Capture and fetch IPC video")
     print()
     print("Examples:")
     print("  python tuya_api.py devices --home 5053559")
     print("  python tuya_api.py control dev123 '{\"switch_led\": true}'")
     print("  python tuya_api.py weather 39.90 116.40 '[\"w.temp\",\"w.humidity\"]'")
     print("  python tuya_api.py stats_data dev123 ele_usage SUM 2024010100 2024010123")
+    print("  python tuya_api.py ipc_pic_fetch dev123 1")
+    print("  python tuya_api.py ipc_video_fetch dev123 5 1")
     print()
     print("Exit codes:")
     print(f"  {_EXIT_CODE_RUNTIME}: runtime/API/network errors")
@@ -456,6 +689,7 @@ def main():
     if command not in {
         "homes", "rooms", "devices", "device_detail", "model", "control",
         "rename", "weather", "sms", "voice", "mail", "push", "stats_config", "stats_data",
+        "ipc_pic_fetch", "ipc_video_fetch",
     }:
         _print_error(command, raw_args, f"Unknown command: {command}")
         _print_help()
@@ -498,7 +732,7 @@ def main():
             result = api.send_push(args[0], args[1])
         elif command == "stats_config":
             result = api.get_statistics_config()
-        else:  # stats_data
+        elif command == "stats_data":
             start_time = args[3]
             end_time = args[4]
             if not (_validate_time_yyyyMMddHH(start_time) and _validate_time_yyyyMMddHH(end_time)):
@@ -506,6 +740,22 @@ def main():
             if not _validate_stats_time_window(start_time, end_time):
                 raise ValueError("stats_data time window must be within 24 hours and end >= start.")
             result = api.get_statistics_data(args[0], args[1], args[2], start_time, end_time)
+        elif command == "ipc_pic_fetch":
+            consent = args[1] == "1"
+            pic_count = int(args[2]) if len(args) > 2 else None
+            home_id = args[3] if len(args) > 3 else None
+            result = api.ipc_ai_capture_pic_allocate_and_fetch(
+                args[0], user_privacy_consent_accepted=consent,
+                pic_count=pic_count, home_id=home_id,
+            )
+        elif command == "ipc_video_fetch":
+            duration = int(args[1])
+            consent = args[2] == "1"
+            home_id = args[3] if len(args) > 3 else None
+            result = api.ipc_ai_capture_video_allocate_and_fetch(
+                args[0], video_duration_seconds=duration,
+                user_privacy_consent_accepted=consent, home_id=home_id,
+            )
 
         _print_json(result)
     except ValueError as e:
