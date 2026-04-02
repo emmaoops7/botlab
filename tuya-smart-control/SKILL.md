@@ -216,6 +216,18 @@ When the user asks to "take a photo with the camera" or "record a short video fr
    - VIDEO with consent: `resolve["decrypt_video_url"]` (cover image may be null if still uploading)
    - If `status` is still `NOT_READY` after all retries, inform the user that the device may be slow to upload and suggest trying again later
 
+### Workflow 9: IPC Visual Recognition
+
+When the user asks "What's in front of my camera?", "Is there anyone at the door?", or "Describe what the camera sees":
+
+1. **Capture a snapshot** — Follow Workflow 8 Steps 1-4 to take a PIC capture with `user_privacy_consent_accepted=True`
+2. **Get the image URL** — Extract `resolve["decrypt_image_url"]` from the capture result. If the resolve failed or returned `NOT_READY`, inform the user and stop
+3. **Download the image** — Fetch the image content from the decrypted URL
+4. **Send to AI vision model** — Pass the image to the AI large model for visual understanding. Describe the image content in natural language based on the user's question:
+   - General question ("What's there?") → describe the overall scene, objects, and people
+   - Specific question ("Is there a package?", "Is anyone at the door?") → focus on answering the specific question
+5. **Return the description** — Respond to the user with the visual analysis result in conversational language
+
 ## Important Notes
 
 1. Device name matching uses fuzzy matching; when multiple results are found, ask the user to confirm

@@ -20,6 +20,7 @@ tuya-smart-control is an official AI Agent skill for the OpenClaw platform, buil
 | Notifications | SMS, voice call, email, App push | Self-send only (to the current logged-in user) |
 | Data Statistics | Hourly statistics config and data query | Energy usage and other metric analysis |
 | IPC Cloud Capture | Cloud snapshot and short video capture | Capture images/videos from IPC cameras and get playable URLs |
+| IPC Visual Recognition | Camera scene understanding | Capture a snapshot and send it to an AI vision model for content description |
 
 ---
 
@@ -74,6 +75,8 @@ After the skill is installed, users can interact with the AI Agent using natural
 - "Check this month's electricity usage"
 - "Take a snapshot from the front door camera"
 - "Record a 5-second video from the living room camera"
+- "What's in front of the door camera?"
+- "Is there anyone at the front door?"
 
 ### Python SDK
 
