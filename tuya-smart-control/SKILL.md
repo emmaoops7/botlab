@@ -1,7 +1,7 @@
 ---
 name: tuya-smart-control
-description: Control Tuya smart home devices via natural language. Use when the user asks to control smart devices (turn on/off lights, AC, plugs, adjust brightness/temperature/mode), query device status or list devices, manage homes and rooms, rename devices, check weather by location, send notifications (SMS, voice call, email, or App push), view device data statistics (e.g. energy/power consumption), or capture snapshots/short videos from IPC cameras. Requires TUYA_API_KEY.
-metadata: { "openclaw": { "version": "1.0.0", "emoji": "🏠", "requires": { "env": ["TUYA_API_KEY"], "pip": ["requests>=2.28.0"] }, "primaryEnv": "TUYA_API_KEY" } }
+description: Control Tuya smart home devices via natural language. Use when the user asks to control smart devices (turn on/off lights, AC, plugs, adjust brightness/temperature/mode), query device status or list devices, manage homes and rooms, rename devices, check weather by location, send notifications (SMS, voice call, email, or App push), view device data statistics (e.g. energy/power consumption), capture snapshots/short videos from IPC cameras, or subscribe to real-time device events (property changes, online/offline status) via WebSocket. Requires TUYA_API_KEY.
+metadata: { "openclaw": { "version": "1.0.0", "emoji": "🏠", "requires": { "env": ["TUYA_API_KEY"], "pip": ["requests>=2.28.0", "websockets>=12.0"] }, "primaryEnv": "TUYA_API_KEY" } }
 ---
 
 # Tuya Smart Home Device Control Skill
@@ -14,6 +14,7 @@ metadata: { "openclaw": { "version": "1.0.0", "emoji": "🏠", "requires": { "en
 - **Credentials**: Read from environment variable `TUYA_API_KEY`. Base URL is auto-detected from API key prefix. See `references/api-conventions.md` for the prefix-to-region mapping table. You can override by setting `TUYA_BASE_URL`.
 - **API Reference**: See individual files under `references/`
 - **Python SDK**: See `scripts/tuya_api.py`
+- **Device Message Client**: See `scripts/tuya_device_mq_client.py` (real-time WebSocket subscription)
 
 ## Environment Variable Configuration
 
@@ -24,6 +25,8 @@ export TUYA_API_KEY="your-tuya-api-key"
 # TUYA_BASE_URL is optional — auto-detected from API key prefix
 # Override only if needed: export TUYA_BASE_URL="https://openapi.tuyaus.com"
 ```
+
+The same `TUYA_API_KEY` is used for both the REST API and WebSocket message subscription. The WebSocket URI is auto-detected from the API key prefix (same 7 data centers as the REST API). See `references/device-message.md` for the full mapping table.
 
 The skill will not load if the `TUYA_API_KEY` environment variable is missing.
 
@@ -84,6 +87,42 @@ weather = api.get_weather(lat="39.90", lon="116.40")
 capture = api.ipc_ai_capture_pic_allocate_and_fetch("device_id_here", user_privacy_consent_accepted=True)
 ```
 
+### Method 3: Device Message Subscription (WebSocket)
+
+Use when you need real-time device event monitoring (property changes, online/offline status):
+
+```python
+import asyncio
+import os
+import sys
+sys.path.insert(0, "{baseDir}/scripts")
+from tuya_device_mq_client import TuyaDeviceMQClient
+
+async def main():
+    # Uses TUYA_API_KEY for auth; WebSocket URI auto-detected from key prefix
+    client = TuyaDeviceMQClient(
+        api_key=os.environ["TUYA_API_KEY"],
+        device_ids=None,  # None = all devices; or pass a list of device IDs
+    )
+
+    @client.on_property_change
+    async def on_prop(device_id, properties):
+        for prop in properties:
+            t = TuyaDeviceMQClient.format_timestamp(prop["time"])
+            print(f"[{t}] Device {device_id}: {prop['code']} = {prop['value']}")
+
+    @client.on_online_status
+    async def on_status(device_id, status, timestamp_ms):
+        t = TuyaDeviceMQClient.format_timestamp(timestamp_ms)
+        print(f"[{t}] Device {device_id} is now {status}")
+
+    await client.connect()
+
+asyncio.run(main())
+```
+
+> **Important**: The WebSocket client runs server-side only. It reuses the same `TUYA_API_KEY` — no separate credentials needed. The WebSocket URI is auto-detected from the key prefix (same 7 data centers as the REST API). Notification throttling (minimum 30-minute cooldown) is mandatory when triggering notifications from device events. See `references/device-message.md` for message format details and more examples.
+
 ## Feature Overview
 
 | Module | Capabilities | Reference |
@@ -96,6 +135,7 @@ capture = api.ipc_ai_capture_pic_allocate_and_fetch("device_id_here", user_priva
 | Notifications | SMS, voice call, email, App push | `references/notifications.md` |
 | Data Statistics | Hourly statistics config query, statistics value query | `references/statistics.md` |
 | IPC Cloud Capture | Cloud snapshot and short video capture for IPC cameras | `references/ipc-cloud-capture.md` |
+| Device Message Subscription | Real-time WebSocket subscription for device property changes and online/offline events | `references/device-message.md` |
 | Error Handling | Error codes and recovery strategies | `references/error-handling.md` |
 | API Conventions | Request/response format, data center mapping | `references/api-conventions.md` |
 
@@ -228,6 +268,31 @@ When the user asks "What's in front of my camera?", "Is there anyone at the door
    - Specific question ("Is there a package?", "Is anyone at the door?") → focus on answering the specific question
 5. **Return the description** — Respond to the user with the visual analysis result in conversational language
 
+### Workflow 10: Real-Time Device Monitoring
+
+When the user asks to "monitor device changes in real time", "watch for property updates", or "notify me when a device goes offline":
+
+1. **Determine scope** — Ask which devices to monitor (all or specific device IDs). If specific, locate devices using Workflow 1 Step 1
+2. **Determine event types** — Property changes (`on_property_change`), online/offline status (`on_online_status`), or both
+3. **Write the subscription script** — Using `TuyaDeviceMQClient` from `scripts/tuya_device_mq_client.py`:
+   - Import and instantiate with `api_key=os.environ["TUYA_API_KEY"]` (WebSocket URI auto-detected from key prefix)
+   - Register appropriate handlers using decorators
+   - Call `await client.connect()` to start listening
+4. **Apply throttling** — If the subscription triggers notifications or device control actions, implement a cooldown mechanism (minimum 30-minute interval for notifications)
+5. **Cross-reference with REST API** — Property codes from WebSocket events correspond to Thing Model codes. Use `api.get_device_model(device_id)` to look up property names and value ranges when needed
+
+### Workflow 11: Event-Driven Automation
+
+When the user asks to "turn on the hallway light when the door opens" or "send me a notification when the AC turns off":
+
+1. **Identify trigger and action** — Parse the trigger device, trigger condition (property code + value), and the action to execute
+2. **Locate devices** — Use Workflow 1 Step 1 to find both the trigger device and the action device
+3. **Write the automation script** — Combine `TuyaDeviceMQClient` for event listening with `TuyaAPI` for device control:
+   - Subscribe to the trigger device's property changes
+   - When the trigger condition is met, call `api.issue_properties()` to control the action device
+   - Implement notification throttling (30-minute cooldown) if sending notifications
+4. **Verify** — Confirm the trigger condition and action mapping with the user before running
+
 ## Important Notes
 
 1. Device name matching uses fuzzy matching; when multiple results are found, ask the user to confirm
@@ -274,3 +339,4 @@ If the user requests any of these unsupported operations, clearly inform them th
 | Api-key | User-configured base_url | API authentication | Required |
 | Device ID | User-configured base_url | Device query and control | Required |
 | Control commands | User-configured base_url | Device property issuance | Required |
+| Api-key | Auto-detected WebSocket URI | Real-time event subscription authentication | Required for message subscription |
