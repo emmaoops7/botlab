@@ -200,24 +200,24 @@ For complete request parameters, response fields, and examples, see the document
 
 | Module | Endpoint | Method | Path | Reference |
 |--------|----------|--------|------|-----------|
-| Home Management | List all homes | GET | `/v1.0/end-user/homes/all` | [home-and-space.md](Tuya%20Smart%20control/references/home-and-space.md) |
-| Home Management | List rooms in a home | GET | `/v1.0/end-user/homes/{home_id}/rooms` | [home-and-space.md](Tuya%20Smart%20control/references/home-and-space.md) |
-| Device Query | List all devices | GET | `/v1.0/end-user/devices/all` | [device-query.md](Tuya%20Smart%20control/references/device-query.md) |
-| Device Query | List devices in a home | GET | `/v1.0/end-user/homes/{home_id}/devices` | [device-query.md](Tuya%20Smart%20control/references/device-query.md) |
-| Device Query | List devices in a room | GET | `/v1.0/end-user/homes/room/{room_id}/devices` | [device-query.md](Tuya%20Smart%20control/references/device-query.md) |
-| Device Query | Get single device detail | GET | `/v1.0/end-user/devices/{device_id}/detail` | [device-query.md](Tuya%20Smart%20control/references/device-query.md) |
-| Device Control | Query device Thing Model | GET | `/v1.0/end-user/devices/{device_id}/model` | [device-control.md](Tuya%20Smart%20control/references/device-control.md) |
-| Device Control | Issue properties | POST | `/v1.0/end-user/devices/{device_id}/shadow/properties/issue` | [device-control.md](Tuya%20Smart%20control/references/device-control.md) |
-| Device Management | Rename device | POST | `/v1.0/end-user/devices/{device_id}/attribute` | [device-management.md](Tuya%20Smart%20control/references/device-management.md) |
-| Weather Service | Query weather | GET | `/v1.0/end-user/services/weather/recent` | [weather.md](Tuya%20Smart%20control/references/weather.md) |
-| Notifications | Send SMS | POST | `/v1.0/end-user/services/sms/self-send` | [notifications.md](Tuya%20Smart%20control/references/notifications.md) |
-| Notifications | Send voice call | POST | `/v1.0/end-user/services/voice/self-send` | [notifications.md](Tuya%20Smart%20control/references/notifications.md) |
-| Notifications | Send email | POST | `/v1.0/end-user/services/mail/self-send` | [notifications.md](Tuya%20Smart%20control/references/notifications.md) |
-| Notifications | Send App push | POST | `/v1.0/end-user/services/push/self-send` | [notifications.md](Tuya%20Smart%20control/references/notifications.md) |
-| Data Statistics | Query statistics config | GET | `/v1.0/end-user/statistics/hour/config` | [statistics.md](Tuya%20Smart%20control/references/statistics.md) |
-| Data Statistics | Query statistics data | GET | `/v1.0/end-user/statistics/hour/data` | [statistics.md](Tuya%20Smart%20control/references/statistics.md) |
-| IPC Cloud Capture | Allocate cloud capture | POST | `/v1.0/end-user/ipc/{device_id}/capture/allocate` | [ipc-cloud-capture.md](Tuya%20Smart%20control/references/ipc-cloud-capture.md) |
-| IPC Cloud Capture | Resolve capture URL | POST | `/v1.0/end-user/ipc/{device_id}/capture/resolve` | [ipc-cloud-capture.md](Tuya%20Smart%20control/references/ipc-cloud-capture.md) |
+| Home Management | List all homes | GET | `/v1.0/end-user/homes/all` | home-and-space.md |
+| Home Management | List rooms in a home | GET | `/v1.0/end-user/homes/{home_id}/rooms` | home-and-space.md |
+| Device Query | List all devices | GET | `/v1.0/end-user/devices/all` | device-query.md |
+| Device Query | List devices in a home | GET | `/v1.0/end-user/homes/{home_id}/devices` | device-query.md |
+| Device Query | List devices in a room | GET | `/v1.0/end-user/homes/room/{room_id}/devices` | device-query.md |
+| Device Query | Get single device detail | GET | `/v1.0/end-user/devices/{device_id}/detail` | device-query.md |
+| Device Control | Query device Thing Model | GET | `/v1.0/end-user/devices/{device_id}/model` | device-control.md |
+| Device Control | Issue properties | POST | `/v1.0/end-user/devices/{device_id}/shadow/properties/issue` | device-control.md |
+| Device Management | Rename device | POST | `/v1.0/end-user/devices/{device_id}/attribute` | device-management.md |
+| Weather Service | Query weather | GET | `/v1.0/end-user/services/weather/recent` | weather.md |
+| Notifications | Send SMS | POST | `/v1.0/end-user/services/sms/self-send` | notifications.md |
+| Notifications | Send voice call | POST | `/v1.0/end-user/services/voice/self-send` | notifications.md |
+| Notifications | Send email | POST | `/v1.0/end-user/services/mail/self-send` | notifications.md |
+| Notifications | Send App push | POST | `/v1.0/end-user/services/push/self-send` | notifications.md |
+| Data Statistics | Query statistics config | GET | `/v1.0/end-user/statistics/hour/config` | statistics.md |
+| Data Statistics | Query statistics data | GET | `/v1.0/end-user/statistics/hour/data` | statistics.md |
+| IPC Cloud Capture | Allocate cloud capture | POST | `/v1.0/end-user/ipc/{device_id}/capture/allocate` | ipc-cloud-capture.md |
+| IPC Cloud Capture | Resolve capture URL | POST | `/v1.0/end-user/ipc/{device_id}/capture/resolve` | ipc-cloud-capture.md |
 
 ---
 
