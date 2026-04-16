@@ -21,6 +21,7 @@ tuya-smart-control is an official AI Agent skill for the OpenClaw platform, buil
 | Data Statistics | Hourly statistics config and data query | Energy usage and other metric analysis |
 | IPC Cloud Capture | Cloud snapshot and short video capture | Capture images/videos from IPC cameras and get playable URLs |
 | IPC Visual Recognition | Camera scene understanding | Capture a snapshot and send it to an AI vision model for content description |
+| Device Message Subscription | Real-time property change and online/offline event monitoring via WebSocket | Event-driven automation, real-time dashboards, status alerts |
 
 ---
 
@@ -39,15 +40,15 @@ tuya-smart-control is an official AI Agent skill for the OpenClaw platform, buil
 
 The first two characters after `sk-` in the API Key are automatically mapped to the corresponding data center:
 
-| Prefix | Region | Base URL |
-|--------|--------|----------|
-| `AY` | China Data Center | `https://openapi.tuyacn.com` |
-| `AZ` | US West Data Center | `https://openapi.tuyaus.com` |
-| `EU` | Central Europe Data Center | `https://openapi.tuyaeu.com` |
-| `IN` | India Data Center | `https://openapi.tuyain.com` |
-| `UE` | US East Data Center | `https://openapi-ueaz.tuyaus.com` |
-| `WE` | Western Europe Data Center | `https://openapi-weaz.tuyaeu.com` |
-| `SG` | Singapore Data Center | `https://openapi-sg.iotbing.com` |
+| Prefix | Region | REST API Base URL | WebSocket URI |
+|--------|--------|----------|---------------|
+| `AY` | China Data Center | `https://openapi.tuyacn.com` | `wss://wsmsgs.tuyacn.com` |
+| `AZ` | US West Data Center | `https://openapi.tuyaus.com` | `wss://wsmsgs.iot-wus.com` |
+| `EU` | Central Europe Data Center | `https://openapi.tuyaeu.com` | `wss://wsmsgs.iot-eu.com` |
+| `IN` | India Data Center | `https://openapi.tuyain.com` | `wss://wsmsgs.iot-ap.com` |
+| `UE` | US East Data Center | `https://openapi-ueaz.tuyaus.com` | `wss://wsmsgs.iot-eus.com` |
+| `WE` | Western Europe Data Center | `https://openapi-weaz.tuyaeu.com` | `wss://wsmsgs.iot-weu.com` |
+| `SG` | Singapore Data Center | `https://openapi-sg.iotbing.com` | `wss://wsmsgs.iot-sea.com` |
 
 ### 3. Install the Skill in OpenClaw
 
@@ -58,6 +59,7 @@ The first two characters after `sk-` in the API Key are automatically mapped to 
 **Prerequisites:**
 - Python 3.7+
 - `requests` library (`pip install requests`)
+- `websockets` library (`pip install websockets`) — for real-time device message subscription
 
 ---
 
@@ -77,6 +79,9 @@ After the skill is installed, users can interact with the AI Agent using natural
 - "Record a 5-second video from the living room camera"
 - "What's in front of the door camera?"
 - "Is there anyone at the front door?"
+- "Monitor all device status changes in real time"
+- "Notify me when the living room light goes offline"
+- "Turn on the hallway light automatically when the door opens"
 
 ### Python SDK
 
@@ -114,6 +119,40 @@ capture = api.ipc_ai_capture_pic_allocate_and_fetch("your_device_id", user_priva
 # IPC cloud capture — record a 5-second video
 video = api.ipc_ai_capture_video_allocate_and_fetch("your_device_id", video_duration_seconds=5, user_privacy_consent_accepted=True)
 ```
+
+### Real-Time Device Message Subscription
+
+The skill includes `scripts/tuya_device_mq_client.py`, a WebSocket client for subscribing to real-time device events. It uses the same `TUYA_API_KEY` — the WebSocket URI is auto-detected from the key prefix.
+
+```python
+import asyncio
+import os
+from tuya_device_mq_client import TuyaDeviceMQClient
+
+async def main():
+    client = TuyaDeviceMQClient(api_key=os.environ["TUYA_API_KEY"])
+
+    @client.on_property_change
+    async def on_prop(device_id, properties):
+        for prop in properties:
+            t = TuyaDeviceMQClient.format_timestamp(prop["time"])
+            print(f"[{t}] Device {device_id}: {prop['code']} = {prop['value']}")
+
+    @client.on_online_status
+    async def on_status(device_id, status, timestamp_ms):
+        t = TuyaDeviceMQClient.format_timestamp(timestamp_ms)
+        print(f"[{t}] Device {device_id} is now {status}")
+
+    await client.connect()
+
+asyncio.run(main())
+```
+
+Key features:
+- **Decorator-style handler registration** — `@client.on_property_change`, `@client.on_online_status`, `@client.on_raw_message`
+- **Device filtering** — pass `device_ids=["id1", "id2"]` to monitor specific devices only
+- **Auto-reconnect** — automatically reconnects on transient failures; stops on fatal close codes
+- **Event-driven automation** — combine with `TuyaAPI` to trigger device control or notifications on events (notification throttling of 30+ minutes is mandatory)
 
 ### Command-Line Tool
 
@@ -214,12 +253,14 @@ For these operations, please use the Tuya App directly.
 tuya-smart-control/
 ├── SKILL.md                       # OpenClaw Skill definition (with metadata)
 ├── scripts/
-│   └── tuya_api.py                # Python SDK + CLI tool
+│   ├── tuya_api.py                # Python SDK + CLI tool (REST API)
+│   └── tuya_device_mq_client.py   # WebSocket client for real-time device events
 └── references/                    # API reference documents
     ├── home-and-space.md          # Home and space management
     ├── device-query.md            # Device query
     ├── device-control.md          # Device control
     ├── device-management.md       # Device management
+    ├── device-message.md          # Device message subscription (WebSocket)
     ├── weather.md                 # Weather service
     ├── notifications.md           # Notifications
     ├── statistics.md              # Data statistics
