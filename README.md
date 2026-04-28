@@ -114,10 +114,10 @@ weather = api.get_weather(lat="39.90", lon="116.40")
 api.send_sms("Alert: Living room light is offline")
 
 # IPC cloud capture — take a snapshot and get decrypted URL
-capture = api.ipc_ai_capture_pic_allocate_and_fetch("your_device_id", user_privacy_consent_accepted=True)
+capture = api.ipc_ai_capture_pic_allocate_and_fetch("your_device_id")
 
 # IPC cloud capture — record a 5-second video
-video = api.ipc_ai_capture_video_allocate_and_fetch("your_device_id", video_duration_seconds=5, user_privacy_consent_accepted=True)
+video = api.ipc_ai_capture_video_allocate_and_fetch("your_device_id", video_duration_seconds=5)
 ```
 
 ### Real-Time Device Message Subscription

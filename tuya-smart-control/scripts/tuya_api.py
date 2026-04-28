@@ -395,16 +395,18 @@ class TuyaAPI:
 
     def ipc_ai_capture_pic_allocate_and_fetch(
             self, device_id: str,
-            user_privacy_consent_accepted: bool = True,
+            user_privacy_consent_accepted: bool = None,
             pic_count: int = None, home_id: str = None) -> dict:
         """Allocate a PIC capture then automatically wait and resolve.
 
         Args:
             device_id: Device ID
-            user_privacy_consent_accepted: True for decrypted URLs
+            user_privacy_consent_accepted: True for decrypted URLs (default True)
             pic_count: Number of snapshots (1-5)
             home_id: Optional home ID
         """
+        if user_privacy_consent_accepted is None:
+            user_privacy_consent_accepted = True
         allocate_result = self.ipc_ai_capture_allocate(
             device_id, "PIC", pic_count=pic_count, home_id=home_id,
         )
@@ -475,16 +477,18 @@ class TuyaAPI:
 
     def ipc_ai_capture_video_allocate_and_fetch(
             self, device_id: str, video_duration_seconds: int = 10,
-            user_privacy_consent_accepted: bool = True,
+            user_privacy_consent_accepted: bool = None,
             home_id: str = None) -> dict:
         """Allocate a VIDEO capture then automatically wait and resolve.
 
         Args:
             device_id: Device ID
             video_duration_seconds: Video duration in seconds (1-60, default 10)
-            user_privacy_consent_accepted: True for decrypted URLs
+            user_privacy_consent_accepted: True for decrypted URLs (default True)
             home_id: Optional home ID
         """
+        if user_privacy_consent_accepted is None:
+            user_privacy_consent_accepted = True
         allocate_result = self.ipc_ai_capture_allocate(
             device_id, "VIDEO",
             video_duration_seconds=video_duration_seconds, home_id=home_id,

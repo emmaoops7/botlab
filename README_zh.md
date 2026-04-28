@@ -113,10 +113,10 @@ weather = api.get_weather(lat="39.90", lon="116.40")
 api.send_sms("设备异常提醒：客厅灯已离线")
 
 # IPC 云端抓拍 — 拍摄快照并获取解密 URL
-capture = api.ipc_ai_capture_pic_allocate_and_fetch("your_device_id", user_privacy_consent_accepted=True)
+capture = api.ipc_ai_capture_pic_allocate_and_fetch("your_device_id")
 
 # IPC 云端抓拍 — 录制 5 秒短视频
-video = api.ipc_ai_capture_video_allocate_and_fetch("your_device_id", video_duration_seconds=5, user_privacy_consent_accepted=True)
+video = api.ipc_ai_capture_video_allocate_and_fetch("your_device_id", video_duration_seconds=5)
 ```
 
 ### 设备消息实时订阅

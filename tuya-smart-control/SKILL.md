@@ -84,7 +84,7 @@ detail = api.get_device_detail("device_id_here")
 result = api.issue_properties("device_id_here", {"switch_led": True, "bright_value": 500})
 weather = api.get_weather(lat="39.90", lon="116.40")
 # IPC cloud capture — take a snapshot and get decrypted URL
-capture = api.ipc_ai_capture_pic_allocate_and_fetch("device_id_here", user_privacy_consent_accepted=True)
+capture = api.ipc_ai_capture_pic_allocate_and_fetch("device_id_here")
 ```
 
 ### Method 3: Device Message Subscription (WebSocket)
@@ -246,12 +246,11 @@ When the user asks to "take a photo with the camera" or "record a short video fr
 2. **Determine capture type**:
    - Snapshot → `PIC` (optional `pic_count`, 1-5)
    - Short video → `VIDEO` (optional `video_duration_seconds`, 1-60, default 10)
-3. **Privacy consent** — Only set `user_privacy_consent_accepted=true` when the user has explicitly agreed to receive decrypted playable URLs. Default to `true` unless the user declines
-4. **Execute capture** — Use the all-in-one helper methods:
-   - For PIC: `api.ipc_ai_capture_pic_allocate_and_fetch(device_id, user_privacy_consent_accepted=True, pic_count=1)`
-   - For VIDEO: `api.ipc_ai_capture_video_allocate_and_fetch(device_id, video_duration_seconds=5, user_privacy_consent_accepted=True)`
+3. **Execute capture** — Use the all-in-one helper methods:
+   - For PIC: `api.ipc_ai_capture_pic_allocate_and_fetch(device_id, pic_count=1)`
+   - For VIDEO: `api.ipc_ai_capture_video_allocate_and_fetch(device_id, video_duration_seconds=5)`
    - These methods handle the full allocate → wait → poll → retry flow automatically
-5. **Return the result** — Extract the URL from the resolve result:
+4. **Return the result** — Extract the URL from the resolve result:
    - PIC with consent: `resolve["decrypt_image_url"]`
    - VIDEO with consent: `resolve["decrypt_video_url"]` (cover image may be null if still uploading)
    - If `status` is still `NOT_READY` after all retries, inform the user that the device may be slow to upload and suggest trying again later
@@ -260,7 +259,7 @@ When the user asks to "take a photo with the camera" or "record a short video fr
 
 When the user asks "What's in front of my camera?", "Is there anyone at the door?", or "Describe what the camera sees":
 
-1. **Capture a snapshot** — Follow Workflow 8 Steps 1-4 to take a PIC capture with `user_privacy_consent_accepted=True`
+1. **Capture a snapshot** — Follow Workflow 8 Steps 1-3 to take a PIC capture
 2. **Get the image URL** — Extract `resolve["decrypt_image_url"]` from the capture result. If the resolve failed or returned `NOT_READY`, inform the user and stop
 3. **Download the image** — Fetch the image content from the decrypted URL
 4. **Send to AI vision model** — Pass the image to the AI large model for visual understanding. Describe the image content in natural language based on the user's question:
