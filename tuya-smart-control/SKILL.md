@@ -11,7 +11,7 @@ metadata: { "openclaw": { "version": "1.0.0", "emoji": "🏠", "requires": { "en
 - **Official Website**: https://www.tuya.com/
 - **Source Code**: https://github.com/tuya/tuya-openclaw-skills
 - **Authentication**: Via Header `Authorization: Bearer {Api-key}`
-- **Credentials**: Read from environment variable `TUYA_API_KEY`. Base URL is auto-detected from API key prefix. See `references/api-conventions.md` for the prefix-to-region mapping table. You can override by setting `TUYA_BASE_URL`.
+- **Credentials**: Read from environment variable `TUYA_API_KEY`. Base URL is auto-detected from API key prefix. See `references/api-conventions.md` for the prefix-to-region mapping table and trace field conventions (`t`, `tid`). You can override by setting `TUYA_BASE_URL`.
 - **API Reference**: See individual files under `references/`
 - **Python SDK**: See `scripts/tuya_api.py`
 - **Device Message Client**: See `scripts/tuya_device_mq_client.py` (real-time WebSocket subscription)

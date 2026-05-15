@@ -75,9 +75,10 @@ def _resolve_base_url(api_key: str) -> str:
 class TuyaAPIError(Exception):
     """Raised when the Tuya API returns success=false."""
 
-    def __init__(self, code, msg):
+    def __init__(self, code, msg, trace: dict = None):
         self.code = code
         self.msg = msg
+        self.trace = trace or {}
         super().__init__(f"Tuya API error {code}: {msg}")
 
 
@@ -100,6 +101,7 @@ class TuyaAPI:
         self.api_key = api_key
         self.base_url = base_url.rstrip("/")
         self.timeout = timeout
+        self.last_trace = {}
         self.session = requests.Session()
         self.session.headers.update({
             "Authorization": f"Bearer {api_key}",
@@ -116,24 +118,33 @@ class TuyaAPI:
 
     # ─── Common Requests ───
 
+    @staticmethod
+    def _extract_trace(body: dict) -> dict:
+        """Return Tuya trace fields from a response body when present."""
+        return {key: body[key] for key in ("t", "tid") if key in body}
+
     def _get(self, path: str, params: dict = None):
-        """Send GET request and return the ``result`` field directly."""
+        """Send GET request and return result, optionally with trace metadata."""
         url = f"{self.base_url}{path}"
         resp = self.session.get(url, params=params, timeout=self.timeout)
         resp.raise_for_status()
         data = resp.json()
+        trace = self._extract_trace(data)
+        self.last_trace = trace
         if not data.get("success"):
-            raise TuyaAPIError(data.get("code"), data.get("msg"))
+            raise TuyaAPIError(data.get("code"), data.get("msg"), trace)
         return data.get("result")
 
     def _post(self, path: str, data: dict = None):
-        """Send POST request and return the ``result`` field directly."""
+        """Send POST request and return result, optionally with trace metadata."""
         url = f"{self.base_url}{path}"
         resp = self.session.post(url, json=data, timeout=self.timeout)
         resp.raise_for_status()
         body = resp.json()
+        trace = self._extract_trace(body)
+        self.last_trace = trace
         if not body.get("success"):
-            raise TuyaAPIError(body.get("code"), body.get("msg"))
+            raise TuyaAPIError(body.get("code"), body.get("msg"), trace)
         return body.get("result")
 
     # ─── Home Management ───
@@ -507,6 +518,14 @@ def _print_json(data):
     print(json.dumps(data, ensure_ascii=False, indent=2))
 
 
+def _print_response(result, trace: dict = None):
+    """Print skill CLI response with Tuya trace metadata when available."""
+    response = {"result": result}
+    if trace:
+        response["trace"] = trace
+    _print_json(response)
+
+
 def _sanitize_message(text: str) -> str:
     """Redact sensitive tokens in stderr-friendly messages."""
     return _API_KEY_RE.sub("sk-***", text)
@@ -525,7 +544,8 @@ def _redact_args(command: str, args: list) -> list:
     return redacted
 
 
-def _print_error(command: str, args: list, message: str, code: int = None):
+def _print_error(command: str, args: list, message: str, code: int = None,
+                 trace: dict = None):
     """Print a standardized error block to stderr."""
     safe_message = _sanitize_message(message)
     safe_args = _redact_args(command, args)
@@ -535,6 +555,8 @@ def _print_error(command: str, args: list, message: str, code: int = None):
     if code is not None:
         print(f"TuyaErrorCode: {code}", file=sys.stderr)
         print(f"Suggestion: {_error_suggestion(code)}", file=sys.stderr)
+    if trace:
+        print(f"Trace: {json.dumps(trace, ensure_ascii=False)}", file=sys.stderr)
 
 
 def _error_suggestion(code: int) -> str:
@@ -761,12 +783,12 @@ def main():
                 user_privacy_consent_accepted=consent, home_id=home_id,
             )
 
-        _print_json(result)
+        _print_response(result, api.last_trace)
     except ValueError as e:
         _print_error(command, raw_args, str(e))
         sys.exit(_EXIT_CODE_USAGE)
     except TuyaAPIError as e:
-        _print_error(command, raw_args, str(e), e.code)
+        _print_error(command, raw_args, str(e), e.code, e.trace)
         sys.exit(_EXIT_CODE_RUNTIME)
     except requests.exceptions.Timeout:
         _print_error(command, raw_args, "Request timed out. Please try again later.")

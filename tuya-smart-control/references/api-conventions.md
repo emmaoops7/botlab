@@ -47,6 +47,8 @@ APIs return a unified structure:
 ```json
 {
   "success": false,
+  "t": 1710234567890,
+  "tid": "trace-id-from-tuya",
   "code": 1108,
   "msg": "uri path invalid"
 }
@@ -54,5 +56,6 @@ APIs return a unified structure:
 
 - When `success` is `true`, the result is in the `result` field
 - When `success` is `false`, error details are in the `code` and `msg` fields
+- Tuya may include trace fields `t` and `tid`; the SDK stores them on `api.last_trace`, raises them on `TuyaAPIError.trace`, and the CLI returns them under a top-level `trace` object when available
 - The Python SDK automatically checks `success` and raises `TuyaAPIError` on failure
 - HTTP 429 and transient 5xx responses are retried automatically with backoff
