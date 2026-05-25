@@ -14,15 +14,12 @@ import os
 import sys
 import re
 import time
-import hmac
-import hashlib
-from urllib.parse import urlencode
 from datetime import datetime
 import requests
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 
-__all__ = ["TuyaAPI", "TuyaAPIError", "TuyaCloudAPI"]
+__all__ = ["TuyaAPI", "TuyaAPIError"]
 
 # API key prefix → data center base URL mapping
 _PREFIX_TO_BASE_URL = {
@@ -42,25 +39,21 @@ _COMMAND_ARG_COUNT = {
     "control": 2, "rename": 2, "mail": 2, "push": 2,
     "weather": 2, "stats_data": 5,
     "ipc_pic_fetch": 2, "ipc_video_fetch": 3,
-    # Infrared OpenAPI commands use TuyaCloudAPI signing credentials.
-    "ir_remotes": 1,        # ir_remotes <infrared_id>
-    "ir_keys": 2,           # ir_keys <infrared_id> <remote_id>
-    "ir_send_std": 4,       # ir_send_std <infrared_id> <remote_id> <category_id> <key> [--remote-index <n>]
-    "ir_send_key": 4,       # ir_send_key <infrared_id> <remote_id> <category_id> <key|key_id>
-    "ir_learn_start": 1,    # ir_learn_start <infrared_id>
-    "ir_learn_stop": 1,     # ir_learn_stop <infrared_id>
-    "ir_learn_code": 1,     # ir_learn_code <infrared_id> [--learning-time <seconds>]
-    "ir_send_learned": 3,   # ir_send_learned <infrared_id> <remote_id> <code>
-    # Experimental 2C DP fallbacks. These are not the official IR OpenAPI.
-    "ir_dp_send": 2,        # ir_dp_send <infrared_id> <key>
-    "ir_dp_send_raw": 2,    # ir_dp_send_raw <infrared_id> <code>
-    "ir_dp_get_learned": 1, # ir_dp_get_learned <infrared_id>
+    "ir_remotes": 1,
+    "ir_keys": 2,
+    "ir_send_std": 4,
+    "ir_send_key": 3,
+    "ir_learn_start": 1,
+    "ir_learn_stop": 1,
+    "ir_learn_code": 1,
+    "ir_send_learned": 3,
 }
 
 _KNOWN_FLAGS = {
     "devices": {"home", "room"},
     "ir_send_std": {"remote-index"},
-    "ir_learn_code": {"learning-time"},
+    "ir_send_key": {"key", "key-id"},
+    "ir_learn_code": {"time"},
 }
 
 _EXIT_CODE_USAGE = 2
@@ -298,50 +291,115 @@ class TuyaAPI:
             },
         )
 
-    # ─── Infrared Remote Control (via DP issue) ───
+    # ─── Infrared Remote Control APIs ───
 
-    def ir_send_code(self, infrared_id: str, key: str) -> dict:
-        """Send an IR code by key name.
-        Uses issue_properties with ir_send DP.
+    def get_infrared_remotes(self, infrared_id: str) -> dict:
+        """List all remote controls bound to this infrared gateway device.
+        GET /v2.0/infrareds/{infrared_id}/remotes
+
+        Args:
+            infrared_id: The infrared gateway device ID (from device list)
+        """
+        return self._get(f"/v2.0/infrareds/{infrared_id}/remotes")
+
+    def get_remote_keys(self, infrared_id: str, remote_id: str) -> dict:
+        """List all keys of a specific remote control.
+        GET /v2.0/infrareds/{infrared_id}/remotes/{remote_id}/keys
 
         Args:
             infrared_id: The infrared gateway device ID
+            remote_id: The remote control ID
+        """
+        return self._get(f"/v2.0/infrareds/{infrared_id}/remotes/{remote_id}/keys")
+
+    def send_standard_command(self, infrared_id: str, remote_id: str,
+                              category_id: int, key: str,
+                              remote_index: int = None) -> dict:
+        """Send a standard IR command via code library.
+        POST /v2.0/infrareds/{infrared_id}/remotes/{remote_id}/command
+
+        Args:
+            infrared_id: The infrared gateway device ID
+            remote_id: The remote control ID
+            category_id: Product category ID (from remote list)
             key: Key name, e.g. "Power", "VolumeUp", "Mute"
+            remote_index: Optional remote index (from keys response)
         """
-        # Tuya 2C shadow/property API serializes the whole properties object once.
-        # Keep ir_send as the raw string value expected by the device Thing Model.
-        payload = {"ir_send": key}
-        return self.issue_properties(infrared_id, payload)
+        body = {"categoryId": category_id, "key": key}
+        if remote_index is not None:
+            body["remoteIndex"] = remote_index
+        return self._post(
+            f"/v2.0/infrareds/{infrared_id}/remotes/{remote_id}/command",
+            data=body,
+        )
 
-    def ir_send_raw(self, infrared_id: str, code_str: str) -> dict:
-        """Send a raw IR code string (Base64 encoded).
-        Uses issue_properties with ir_send DP.
+    def send_key_command(self, infrared_id: str, remote_id: str,
+                         category_id: int, key: str = None,
+                         key_id: int = None) -> dict:
+        """Send a key command (raw key) to a remote control.
+        POST /v2.0/infrareds/{infrared_id}/remotes/{remote_id}/raw/command
 
         Args:
             infrared_id: The infrared gateway device ID
-            code_str: Base64-encoded IR code
+            remote_id: The remote control ID
+            category_id: Product category ID
+            key: Key name (optional if key_id is provided)
+            key_id: Key ID (optional if key is provided)
         """
-        payload = {"ir_send": code_str}
-        return self.issue_properties(infrared_id, payload)
+        body = {"category_id": category_id}
+        if key is not None:
+            body["key"] = key
+        if key_id is not None:
+            body["key_id"] = key_id
+        return self._post(
+            f"/v2.0/infrareds/{infrared_id}/remotes/{remote_id}/raw/command",
+            data=body,
+        )
 
-    def ir_start_learning(self, infrared_id: str) -> dict:
-        """Start IR learning mode. Send ir_send with study flag.
-        After calling this, point the remote at the IR hub and press a key.
+    def set_learning_state(self, infrared_id: str, state: bool) -> dict:
+        """Enable or disable IR learning mode.
+        PUT /v2.0/infrareds/{infrared_id}/learning-state?state={state}
+
+        Args:
+            infrared_id: The infrared gateway device ID
+            state: True to start learning, False to stop
         """
-        payload = {"ir_send": "study"}
-        return self.issue_properties(infrared_id, payload)
+        return self._session.put(
+            f"{self.base_url}/v2.0/infrareds/{infrared_id}/learning-state",
+            params={"state": "true" if state else "false"},
+            timeout=self.timeout,
+        ).json().get("result")
 
-    def ir_stop_learning(self, infrared_id: str) -> dict:
-        """Stop IR learning mode."""
-        payload = {"ir_send": "study_exit"}
-        return self.issue_properties(infrared_id, payload)
+    def get_learned_code(self, infrared_id: str, learning_time: int = None) -> dict:
+        """Get the learned IR code from the infrared gateway.
+        GET /v2.0/infrareds/{infrared_id}/learning-codes
 
-    def ir_get_learned_code(self, infrared_id: str) -> dict:
-        """Get the learned IR code from device properties.
-        Returns the current ir_study_code value.
+        Args:
+            infrared_id: The infrared gateway device ID
+            learning_time: Optional timestamp in ms to filter
         """
-        detail = self.get_device_detail(infrared_id)
-        return detail.get("properties", {}).get("ir_study_code")
+        params = {}
+        if learning_time is not None:
+            params["learning_time"] = str(learning_time)
+        return self._get(
+            f"/v2.0/infrareds/{infrared_id}/learning-codes",
+            params=params if params else None,
+        )
+
+    def send_learning_code(self, infrared_id: str, remote_id: str,
+                           code: str) -> dict:
+        """Send a learned IR code to a remote control.
+        POST /v2.0/infrareds/{infrared_id}/remotes/{remote_id}/learning-codes
+
+        Args:
+            infrared_id: The infrared gateway device ID
+            remote_id: The remote control ID
+            code: The learned IR code string (Base64 encoded raw data)
+        """
+        return self._post(
+            f"/v2.0/infrareds/{infrared_id}/remotes/{remote_id}/learning-codes",
+            data={"code": code},
+        )
 
     # ─── IPC Cloud Capture ───
 
@@ -575,135 +633,6 @@ class TuyaAPI:
         return {"allocate": allocate_result, "resolve": resolve_result}
 
 
-class TuyaCloudAPI:
-    """Tuya Cloud Development API client using Access ID/Secret signing.
-
-    This is required for IR Control Hub Open Service (/v2.0/infrareds/...).
-    It is intentionally separate from TuyaAPI, which uses the 2C end-user
-    Bearer TUYA_API_KEY for /v1.0/end-user/... APIs.
-    """
-
-    def __init__(self, access_id: str = None, access_secret: str = None,
-                 base_url: str = None, timeout: int = 30):
-        self.access_id = access_id or os.environ.get("TUYA_ACCESS_ID") or os.environ.get("TUYA_CLIENT_ID")
-        self.access_secret = access_secret or os.environ.get("TUYA_ACCESS_SECRET") or os.environ.get("TUYA_CLIENT_SECRET")
-        self.base_url = (base_url or os.environ.get("TUYA_ENDPOINT") or os.environ.get("TUYA_CLOUD_BASE_URL") or os.environ.get("TUYA_BASE_URL") or "").rstrip("/")
-        if not self.access_id or not self.access_secret:
-            raise ValueError("Missing Tuya Cloud credentials. Set TUYA_ACCESS_ID and TUYA_ACCESS_SECRET.")
-        if not self.base_url:
-            raise ValueError("Missing Tuya Cloud endpoint. Set TUYA_ENDPOINT, for example https://openapi.tuyacn.com.")
-        self.timeout = timeout
-        self.access_token = os.environ.get("TUYA_ACCESS_TOKEN")
-        self.last_trace = {}
-        self.session = requests.Session()
-        retry = Retry(
-            total=3,
-            backoff_factor=0.5,
-            status_forcelist=[429, 500, 502, 503, 504],
-            allowed_methods=frozenset(["GET", "POST", "PUT", "DELETE"]),
-            respect_retry_after_header=True,
-        )
-        self.session.mount("https://", HTTPAdapter(max_retries=retry))
-
-    @staticmethod
-    def _extract_trace(body: dict) -> dict:
-        return {key: body[key] for key in ("t", "tid") if key in body}
-
-    @staticmethod
-    def _sha256_hex(raw: bytes) -> str:
-        return hashlib.sha256(raw).hexdigest()
-
-    @staticmethod
-    def _canonical_url(path: str, params: dict = None) -> str:
-        if not params:
-            return path
-        items = sorted((str(k), str(v)) for k, v in params.items() if v is not None)
-        return path + "?" + urlencode(items)
-
-    def _sign(self, method: str, path: str, params: dict = None,
-              body: dict = None, token: str = None) -> dict:
-        body_bytes = b"" if body is None else json.dumps(body, separators=(",", ":"), ensure_ascii=False).encode("utf-8")
-        content_sha = self._sha256_hex(body_bytes)
-        string_to_sign = "\n".join([
-            method.upper(),
-            content_sha,
-            "",
-            self._canonical_url(path, params),
-        ])
-        t = str(int(time.time() * 1000))
-        raw = self.access_id + (token or "") + t + string_to_sign
-        sign = hmac.new(self.access_secret.encode("utf-8"), raw.encode("utf-8"), hashlib.sha256).hexdigest().upper()
-        headers = {
-            "client_id": self.access_id,
-            "sign": sign,
-            "t": t,
-            "sign_method": "HMAC-SHA256",
-            "Content-Type": "application/json",
-        }
-        if token:
-            headers["access_token"] = token
-        return headers
-
-    def _request(self, method: str, path: str, params: dict = None,
-                 body: dict = None, require_token: bool = True):
-        token = self.access_token
-        if require_token and not token:
-            token = self.get_access_token()
-        headers = self._sign(method, path, params=params, body=body, token=token if require_token else None)
-        url = f"{self.base_url}{path}"
-        body_bytes = None if body is None else json.dumps(body, separators=(",", ":"), ensure_ascii=False).encode("utf-8")
-        resp = self.session.request(method.upper(), url, params=params, data=body_bytes, headers=headers, timeout=self.timeout)
-        resp.raise_for_status()
-        data = resp.json()
-        trace = self._extract_trace(data)
-        self.last_trace = trace
-        if not data.get("success"):
-            raise TuyaAPIError(data.get("code"), data.get("msg"), trace)
-        return data.get("result")
-
-    def get_access_token(self) -> str:
-        result = self._request("GET", "/v1.0/token", params={"grant_type": "1"}, require_token=False)
-        if not isinstance(result, dict) or not result.get("access_token"):
-            raise TuyaAPIError("TOKEN", "Tuya token response did not include access_token", self.last_trace)
-        self.access_token = result["access_token"]
-        return self.access_token
-
-    def get_infrared_remotes(self, infrared_id: str) -> dict:
-        return self._request("GET", f"/v2.0/infrareds/{infrared_id}/remotes")
-
-    def get_remote_keys(self, infrared_id: str, remote_id: str) -> dict:
-        return self._request("GET", f"/v2.0/infrareds/{infrared_id}/remotes/{remote_id}/keys")
-
-    def send_standard_command(self, infrared_id: str, remote_id: str,
-                              category_id: int, key: str,
-                              remote_index: int = None) -> dict:
-        body = {"categoryId": category_id, "key": key}
-        if remote_index is not None:
-            body["remoteIndex"] = remote_index
-        return self._request("POST", f"/v2.0/infrareds/{infrared_id}/remotes/{remote_id}/command", body=body)
-
-    def send_key_command(self, infrared_id: str, remote_id: str,
-                         category_id: int, key: str = None,
-                         key_id: int = None) -> dict:
-        body = {"category_id": category_id}
-        if key is not None:
-            body["key"] = key
-        if key_id is not None:
-            body["key_id"] = key_id
-        return self._request("POST", f"/v2.0/infrareds/{infrared_id}/remotes/{remote_id}/raw/command", body=body)
-
-    def set_learning_state(self, infrared_id: str, state: bool) -> dict:
-        return self._request("PUT", f"/v2.0/infrareds/{infrared_id}/learning-state", params={"state": "true" if state else "false"})
-
-    def get_learned_code(self, infrared_id: str, learning_time: int = None) -> dict:
-        params = {"learning_time": str(learning_time)} if learning_time is not None else None
-        return self._request("GET", f"/v2.0/infrareds/{infrared_id}/learning-codes", params=params)
-
-    def send_learning_code(self, infrared_id: str, remote_id: str,
-                           code: str) -> dict:
-        return self._request("POST", f"/v2.0/infrareds/{infrared_id}/remotes/{remote_id}/learning-codes", body={"code": code})
-
-
 # ─── Command-Line Mode ───
 
 def _print_json(data):
@@ -754,7 +683,7 @@ def _print_error(command: str, args: list, message: str, code: int = None,
 def _error_suggestion(code: int) -> str:
     """Return actionable guidance for common Tuya API errors."""
     suggestions = {
-        1010: "Token invalid/expired. For infrared commands, use Tuya Cloud ACCESS_ID/ACCESS_SECRET signing, not TUYA_API_KEY.",
+        1010: "Your API key is invalid or expired. Please update TUYA_API_KEY.",
         10011: "No bound contact for current user. Bind phone/email in Tuya App.",
         40000901: "Device does not exist. Re-check device_id or refresh device list.",
     }
@@ -818,8 +747,7 @@ def _print_help():
     """Print CLI usage and examples."""
     print("Usage: python tuya_api.py <command> [params...]")
     print()
-    print("Set TUYA_API_KEY for 2C end-user commands.")
-    print("Set TUYA_ACCESS_ID, TUYA_ACCESS_SECRET, and TUYA_ENDPOINT for infrared OpenAPI commands.")
+    print("TUYA_API_KEY is required. TUYA_BASE_URL is optional (auto-detected from key prefix).")
     print()
     print("Commands:")
     print("  homes                                  List all homes")
@@ -839,22 +767,17 @@ def _print_help():
     print("  ipc_pic_fetch <device_id> <consent> [pic_count] [home_id]  Capture and fetch IPC snapshot")
     print("  ipc_video_fetch <device_id> <duration> <consent> [home_id]  Capture and fetch IPC video")
     print()
-    print("Infrared Remote Control Commands (Tuya Cloud OpenAPI /v2.0/infrareds):")
-    print("  ir_remotes <infrared_id>                           List remotes under an IR gateway")
-    print("  ir_keys <infrared_id> <remote_id>                  List keys for a remote")
-    print("  ir_send_std <infrared_id> <remote_id> <category_id> <key> [--remote-index <n>]")
-    print("                                                    Send a standard remote key")
-    print("  ir_send_key <infrared_id> <remote_id> <category_id> <key|key_id>")
-    print("                                                    Send a raw remote key command")
-    print("  ir_learn_start <infrared_id>                       Start IR learning mode")
-    print("  ir_learn_stop <infrared_id>                        Stop IR learning mode")
-    print("  ir_learn_code <infrared_id> [--learning-time <s>]  Get learned IR code")
-    print("  ir_send_learned <infrared_id> <remote_id> <code>   Send a learned IR code")
-    print()
-    print("Experimental 2C DP fallback commands:")
-    print("  ir_dp_send <infrared_id> <key>                     Try DP ir_send by key")
-    print("  ir_dp_send_raw <infrared_id> <base64code>          Try DP ir_send by raw code")
-    print("  ir_dp_get_learned <infrared_id>                   Read DP ir_study_code from detail")
+    print("Infrared Remote Control Commands:")
+    print("  ir_remotes <infrared_id>                        List remote controls of an IR gateway")
+    print("  ir_keys <infrared_id> <remote_id>               List keys of a remote control")
+    print("  ir_send_std <infrared_id> <remote_id> <cat_id> <key> [--remote-index N]")
+    print("                                                    Send standard command via code library")
+    print("  ir_send_key <infrared_id> <remote_id> <cat_id> [--key K] [--key-id N]")
+    print("                                                    Send key command")
+    print("  ir_learn_start <infrared_id>                     Start IR learning mode")
+    print("  ir_learn_stop <infrared_id>                      Stop IR learning mode")
+    print("  ir_learn_code <infrared_id> [--time T]           Get learned IR code")
+    print("  ir_send_learned <infrared_id> <remote_id> <code>  Send learned IR code")
     print()
     print("Examples:")
     print("  python tuya_api.py devices --home 5053559")
@@ -863,10 +786,13 @@ def _print_help():
     print("  python tuya_api.py stats_data dev123 ele_usage SUM 2024010100 2024010123")
     print("  python tuya_api.py ipc_pic_fetch dev123 1")
     print("  python tuya_api.py ipc_video_fetch dev123 5 1")
-    print("  python tuya_api.py ir_remotes a3a27826b422e39a19touf")
-    print("  python tuya_api.py ir_keys a3a27826b422e39a19touf remote123")
-    print("  python tuya_api.py ir_send_std a3a27826b422e39a19touf remote123 1 Power")
-    print("  python tuya_api.py ir_learn_start a3a27826b422e39a19touf")
+    print("  python tuya_api.py ir_remotes vdevo123456")
+    print("  python tuya_api.py ir_keys vdevo123456 rc001")
+    print("  python tuya_api.py ir_send_std vdevo123456 rc001 2 Power")
+    print("  python tuya_api.py ir_send_key vdevo123456 rc001 2 --key power")
+    print("  python tuya_api.py ir_learn_start vdevo123456")
+    print("  python tuya_api.py ir_learn_code vdevo123456")
+    print("  python tuya_api.py ir_send_learned vdevo123456 rc001 '<base64code>'")
     print()
     print("Exit codes:")
     print(f"  {_EXIT_CODE_RUNTIME}: runtime/API/network errors")
@@ -879,7 +805,7 @@ def _validate_flags_for_command(command: str, flags: dict):
     unknown = sorted(set(flags.keys()) - set(allowed))
     if unknown:
         raise ValueError(f"Unknown flag(s) for '{command}': {', '.join('--' + f for f in unknown)}")
-    _flags_allowed = {"devices", "ir_send_std", "ir_learn_code"}
+    _flags_allowed = {"devices", "ir_send_std", "ir_send_key", "ir_learn_code"}
     if command not in _flags_allowed and flags:
         raise ValueError(f"Flags are not supported for '{command}'.")
     if command == "devices" and "home" in flags and "room" in flags:
@@ -933,15 +859,13 @@ def main():
         "ipc_pic_fetch", "ipc_video_fetch",
         "ir_remotes", "ir_keys", "ir_send_std", "ir_send_key",
         "ir_learn_start", "ir_learn_stop", "ir_learn_code", "ir_send_learned",
-        "ir_dp_send", "ir_dp_send_raw", "ir_dp_get_learned",
     }:
         _print_error(command, raw_args, f"Unknown command: {command}")
         _print_help()
         sys.exit(_EXIT_CODE_USAGE)
 
     try:
-        ir_commands = {"ir_remotes", "ir_keys", "ir_send_std", "ir_send_key", "ir_learn_start", "ir_learn_stop", "ir_learn_code", "ir_send_learned"}
-        api = TuyaCloudAPI() if command in ir_commands else TuyaAPI()
+        api = TuyaAPI()
 
         if command == "homes":
             result = api.get_homes()
@@ -1002,37 +926,32 @@ def main():
                 user_privacy_consent_accepted=consent, home_id=home_id,
             )
 
-        # ─── Infrared Commands (Tuya Cloud OpenAPI) ───
+        # ─── Infrared Commands ───
         elif command == "ir_remotes":
             result = api.get_infrared_remotes(args[0])
         elif command == "ir_keys":
             result = api.get_remote_keys(args[0], args[1])
         elif command == "ir_send_std":
+            cat_id = int(args[2])
             remote_index = int(flags["remote-index"]) if "remote-index" in flags else None
-            result = api.send_standard_command(args[0], args[1], int(args[2]), args[3], remote_index)
+            result = api.send_standard_command(
+                args[0], args[1], cat_id, args[3], remote_index=remote_index,
+            )
         elif command == "ir_send_key":
-            key_or_id = args[3]
-            if key_or_id.isdigit():
-                result = api.send_key_command(args[0], args[1], int(args[2]), key_id=int(key_or_id))
-            else:
-                result = api.send_key_command(args[0], args[1], int(args[2]), key=key_or_id)
+            cat_id = int(args[2])
+            result = api.send_key_command(
+                args[0], args[1], cat_id,
+                key=flags.get("key"), key_id=int(flags["key-id"]) if "key-id" in flags else None,
+            )
         elif command == "ir_learn_start":
             result = api.set_learning_state(args[0], True)
         elif command == "ir_learn_stop":
             result = api.set_learning_state(args[0], False)
         elif command == "ir_learn_code":
-            learning_time = int(flags["learning-time"]) if "learning-time" in flags else None
-            result = api.get_learned_code(args[0], learning_time)
+            learning_time = int(flags["time"]) if "time" in flags else None
+            result = api.get_learned_code(args[0], learning_time=learning_time)
         elif command == "ir_send_learned":
             result = api.send_learning_code(args[0], args[1], args[2])
-
-        # ─── Experimental infrared commands (2C DP fallback) ───
-        elif command == "ir_dp_send":
-            result = api.ir_send_code(args[0], args[1])
-        elif command == "ir_dp_send_raw":
-            result = api.ir_send_raw(args[0], args[1])
-        elif command == "ir_dp_get_learned":
-            result = api.ir_get_learned_code(args[0])
 
         _print_response(result, api.last_trace)
     except ValueError as e:
