@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>repair - 华亚幸福家</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script>tailwind.config={theme:{extend:{colors:{primary:'#1890FF',primaryLight:'#40A9FF',primaryDark:'#096DD9',warmOrange:'#FF6B35',bgGray:'#F5F7FA',textMain:'#1F2937',textSub:'#6B7280',borderLight:'#E5E7EB'}}}}</script>
+  <link rel="stylesheet" href="../assets/common.css">
+</head>
+<body class="bg-bgGray" data-page="repair">
+<div class="app-shell">
+<div id="toast" class="toast fixed top-4 left-1/2 -translate-x-1/2 bg-gray-800 text-white px-6 py-3 rounded-lg shadow-lg z-50 whitespace-nowrap"></div>
+<div id="page-repair" class="page">
+  <div class="bg-gradient-to-r from-primary to-primaryDark text-white px-4 py-3 sticky top-0 z-40 flex items-center gap-3">
+    <button onclick="navBack()" class="text-white"><i class="fas fa-chevron-left"></i></button>
+    <h1 class="text-lg font-semibold flex-1 text-center pr-6">报修服务</h1>
+  </div>
+
+  <div class="p-4">
+    <!-- 报修入口 -->
+    <div class="card p-6 mb-4 text-center">
+      <div class="w-20 h-20 mx-auto bg-warmOrange/10 rounded-full flex items-center justify-center">
+        <i class="fas fa-tools text-warmOrange text-3xl"></i>
+      </div>
+      <h2 class="text-lg font-semibold text-textMain mt-4">需要报修？</h2>
+      <p class="text-textSub text-sm mt-2">专业师傅快速上门，为您解决家居问题</p>
+      <button onclick="showRepairModal()" class="btn-primary w-full text-white py-3 rounded-lg font-semibold mt-4">
+        <i class="fas fa-plus mr-2"></i>我要报修
+      </button>
+    </div>
+
+    <!-- 报修记录 -->
+    <div class="card">
+      <div class="p-4 border-b border-borderLight">
+        <h3 class="font-semibold text-textMain">我的报修记录</h3>
+      </div>
+      <div class="divide-y divide-borderLight">
+        <div class="p-4" onclick="showRepairDetail('客厅灯不亮', '处理中')">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-sm font-medium text-textMain">客厅灯不亮</span>
+            <span class="px-2 py-0.5 bg-yellow-100 text-yellow-600 text-xs rounded">处理中</span>
+          </div>
+          <p class="text-xs text-textSub">报修时间：2026-04-14 10:30</p>
+          <p class="text-xs text-textSub mt-1">师傅：张师傅 138****5678</p>
+        </div>
+        <div class="p-4" onclick="showRepairDetail('卫生间漏水', '已完成')">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-sm font-medium text-textMain">卫生间漏水</span>
+            <span class="px-2 py-0.5 bg-green-100 text-green-600 text-xs rounded">已完成</span>
+          </div>
+          <p class="text-xs text-textSub">报修时间：2026-04-10 15:20</p>
+          <p class="text-xs text-textSub mt-1">完成时间：2026-04-11 09:00</p>
+        </div>
+        <div class="p-4" onclick="showRepairDetail('空调不制冷', '已撤回')">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-sm font-medium text-textMain">空调不制冷</span>
+            <span class="px-2 py-0.5 bg-gray-100 text-gray-600 text-xs rounded">已撤回</span>
+          </div>
+          <p class="text-xs text-textSub">报修时间：2026-04-08 09:15</p>
+          <p class="text-xs text-textSub mt-1">撤回时间：2026-04-08 14:30</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== 公告详情页 ==================== -->
+
+</div>
+<script src="../assets/app.js"></script>
+</body>
+</html>

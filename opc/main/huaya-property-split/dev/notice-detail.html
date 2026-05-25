@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>notice-detail - 华亚幸福家</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script>tailwind.config={theme:{extend:{colors:{primary:'#1890FF',primaryLight:'#40A9FF',primaryDark:'#096DD9',warmOrange:'#FF6B35',bgGray:'#F5F7FA',textMain:'#1F2937',textSub:'#6B7280',borderLight:'#E5E7EB'}}}}</script>
+  <link rel="stylesheet" href="../assets/common.css">
+</head>
+<body class="bg-bgGray" data-page="notice-detail">
+<div class="app-shell">
+<div id="toast" class="toast fixed top-4 left-1/2 -translate-x-1/2 bg-gray-800 text-white px-6 py-3 rounded-lg shadow-lg z-50 whitespace-nowrap"></div>
+<div id="page-notice-detail" class="page">
+  <div class="bg-gradient-to-r from-primary to-primaryDark text-white px-4 py-3 sticky top-0 z-40 flex items-center gap-3">
+    <button onclick="navBack()" class="text-white"><i class="fas fa-chevron-left"></i></button>
+    <h1 class="text-lg font-semibold flex-1 text-center pr-6">公告详情</h1>
+  </div>
+
+  <div class="p-4">
+    <div class="card p-4">
+      <h2 class="text-lg font-bold text-textMain mb-2">关于小区停水通知</h2>
+      <div class="flex items-center gap-4 text-xs text-textSub mb-4">
+        <span><i class="fas fa-calendar mr-1"></i>2026-04-15</span>
+        <span><i class="fas fa-building mr-1"></i>物业服务中心</span>
+      </div>
+      <div class="border-t border-borderLight pt-4">
+        <img src="https://picsum.photos/seed/water-notice/600/300" alt="停水通知" class="w-full rounded-lg mb-4">
+        <div class="prose prose-sm text-textMain">
+          <p class="mb-3">尊敬的各位业主/住户：</p>
+          <p class="mb-3">因小区供水管道维修，本小区将于以下时间段停水：</p>
+          <p class="mb-3"><strong>停水时间：</strong>2026 年 4 月 16 日 09:00 - 17:00</p>
+          <p class="mb-3"><strong>停水范围：</strong>全小区所有楼栋</p>
+          <p class="mb-3">请各位住户提前做好储水准备，停水期间请关闭水龙头，避免来水后造成浪费。</p>
+          <p class="mb-3">如有疑问，请致电物业服务中心：0755-12345678</p>
+          <p class="mb-3">给您带来的不便，敬请谅解！</p>
+          <p class="text-right mt-4">华亚幸福家物业服务中心</p>
+          <p class="text-right">2026 年 4 月 15 日</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 报修 Modal -->
+<div id="repair-modal" class="fixed inset-0 bg-black/50 z-50 hidden">
+  <div class="absolute bottom-0 left-0 right-0 bg-white rounded-t-2xl max-h-[90vh] overflow-y-auto modal">
+    <div class="p-4 border-b border-borderLight flex items-center justify-between">
+      <h3 class="font-semibold text-textMain">提交报修</h3>
+      <button onclick="hideRepairModal()" class="text-textSub"><i class="fas fa-times text-lg"></i></button>
+    </div>
+    <div class="p-4">
+      <div class="mb-4">
+        <label class="block text-sm text-textSub mb-2">报修类型</label>
+        <select class="input-field w-full px-4 py-3 rounded-lg text-textMain bg-white">
+          <option>请选择类型</option>
+          <option>水电维修</option>
+          <option>门窗维修</option>
+          <option>家电故障</option>
+          <option>管道疏通</option>
+          <option>其他</option>
+        </select>
+      </div>
+      <div class="mb-4">
+        <label class="block text-sm text-textSub mb-2">问题描述</label>
+        <textarea placeholder="请详细描述问题..." rows="4"
+          class="input-field w-full px-4 py-3 rounded-lg text-textMain resize-none"></textarea>
+      </div>
+      <div class="mb-4">
+        <label class="block text-sm text-textSub mb-2">上传图片</label>
+        <div class="flex gap-2">
+          <div class="w-20 h-20 border-2 border-dashed border-borderLight rounded-lg flex items-center justify-center">
+            <i class="fas fa-camera text-textSub text-xl"></i>
+          </div>
+          <div class="w-20 h-20 border-2 border-dashed border-borderLight rounded-lg flex items-center justify-center">
+            <i class="fas fa-camera text-textSub text-xl"></i>
+          </div>
+          <div class="w-20 h-20 border-2 border-dashed border-borderLight rounded-lg flex items-center justify-center">
+            <i class="fas fa-camera text-textSub text-xl"></i>
+          </div>
+        </div>
+      </div>
+      <div class="mb-4">
+        <label class="block text-sm text-textSub mb-2">预约时间</label>
+        <input type="datetime-local" class="input-field w-full px-4 py-3 rounded-lg text-textMain">
+      </div>
+      <div class="mb-4">
+        <label class="block text-sm text-textSub mb-2">联系方式</label>
+        <input type="tel" placeholder="请输入手机号" maxlength="11"
+          class="input-field w-full px-4 py-3 rounded-lg text-textMain">
+      </div>
+      <button onclick="submitRepair()" class="btn-primary w-full text-white py-3 rounded-lg font-semibold">
+        提交报修
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- 报修详情 Modal -->
+<div id="repair-detail-modal" class="fixed inset-0 bg-black/50 z-50 hidden">
+  <div class="absolute bottom-0 left-0 right-0 bg-white rounded-t-2xl max-h-[90vh] overflow-y-auto modal">
+    <div class="p-4 border-b border-borderLight flex items-center justify-between">
+      <h3 class="font-semibold text-textMain">报修详情</h3>
+      <button onclick="hideRepairDetailModal()" class="text-textSub"><i class="fas fa-times text-lg"></i></button>
+    </div>
+    <div class="p-4">
+      <div class="flex items-center justify-between mb-4">
+        <h4 id="detail-title" class="text-lg font-semibold text-textMain">客厅灯不亮</h4>
+        <span id="detail-status" class="px-3 py-1 text-sm rounded">处理中</span>
+      </div>
+      <div class="space-y-3 text-sm">
+        <div class="flex items-center gap-2 text-textSub">
+          <i class="fas fa-calendar w-5"></i>
+          <span>报修时间：2026-04-14 10:30</span>
+        </div>
+        <div class="flex items-center gap-2 text-textSub">
+          <i class="fas fa-user w-5"></i>
+          <span>师傅：张师傅 138****5678</span>
+        </div>
+        <div class="flex items-center gap-2 text-textSub">
+          <i class="fas fa-map-marker-alt w-5"></i>
+          <span>地址：华亚幸福城一期 3 栋 201</span>
+        </div>
+      </div>
+      <div class="mt-4">
+        <label class="block text-sm text-textSub mb-2">问题描述</label>
+        <p class="text-textMain bg-bgGray p-3 rounded-lg">客厅主灯突然不亮了，开关试过多次没反应，其他房间正常。</p>
+      </div>
+      <div class="mt-4">
+        <label class="block text-sm text-textSub mb-2">上传图片</label>
+        <div class="flex gap-2">
+          <img src="https://picsum.photos/seed/repair1/80/80" class="w-20 h-20 rounded-lg object-cover">
+          <img src="https://picsum.photos/seed/repair2/80/80" class="w-20 h-20 rounded-lg object-cover">
+        </div>
+      </div>
+      <div id="withdraw-btn-container" class="mt-6">
+        <button onclick="withdrawRepair()" class="w-full border border-borderLight text-textSub py-3 rounded-lg font-semibold">
+          撤回报修
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>
+<script src="../assets/app.js"></script>
+</body>
+</html>

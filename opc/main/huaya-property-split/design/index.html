@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>华亚幸福家设计画板总览</title><script src="https://cdn.tailwindcss.com"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"><script>tailwind.config={theme:{extend:{colors:{primary:'#1890FF',primaryLight:'#40A9FF',primaryDark:'#096DD9',warmOrange:'#FF6B35',bgGray:'#F5F7FA',textMain:'#1F2937',textSub:'#6B7280',borderLight:'#E5E7EB'}}}}</script><link rel="stylesheet" href="../assets/common.css"><link rel="stylesheet" href="design.css"></head><body><main class="gallery"><section><h2 class="board-title">home</h2><div class="board"><div class="frame"><div id="page-home" class="page">
+  <!-- 顶部导航 -->
+  <div class="bg-gradient-to-r from-primary to-primaryDark text-white px-4 py-3 flex items-center justify-between sticky top-0 z-40">
+    <button class="text-white">
+      <i class="fas fa-home text-lg"></i>
+    </button>
+    <h1 class="text-lg font-semibold">华亚幸福家</h1>
+    <div class="w-6"></div>
+  </div>
+
+  <!-- Banner -->
+  <div class="relative overflow-hidden">
+    <div id="banner" class="flex transition-transform duration-300">
+      <div class="min-w-full h-40 bg-gradient-to-r from-blue-400 to-blue-600 flex items-center justify-center">
+        <div class="text-white text-center px-4">
+          <i class="fas fa-building text-4xl mb-2"></i>
+          <p class="text-lg font-semibold">智慧社区 美好生活</p>
+        </div>
+      </div>
+      <div class="min-w-full h-40 bg-gradient-to-r from-orange-400 to-orange-600 flex items-center justify-center">
+        <div class="text-white text-center px-4">
+          <i class="fas fa-users text-4xl mb-2"></i>
+          <p class="text-lg font-semibold">贴心服务 温暖相伴</p>
+        </div>
+      </div>
+      <div class="min-w-full h-40 bg-gradient-to-r from-green-400 to-green-600 flex items-center justify-center">
+        <div class="text-white text-center px-4">
+          <i class="fas fa-shield-alt text-4xl mb-2"></i>
+          <p class="text-lg font-semibold">安全守护 安心居住</p>
+        </div>
+      </div>
+    </div>
+    <div class="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-2">
+      <span class="banner-dot active w-5 h-2 bg-white/60 rounded-full"></span>
+      <span class="banner-dot w-5 h-2 bg-white/60 rounded-full"></span>
+      <span class="banner-dot w-5 h-2 bg-white/60 rounded-full"></span>
+    </div>
+  </div>
+
+  <!-- 金刚区 1 行 4 列 -->
+  <div class="bg-white mt-2 py-4">
+    <div class="grid grid-cols-4 gap-4 px-4">
+      <div class="menu-item text-center">
+        <div class="w-12 h-12 mx-auto bg-blue-100 rounded-full flex items-center justify-center">
+          <i class="fas fa-file-invoice-dollar text-primary text-xl"></i>
+        </div>
+        <p class="text-xs mt-2 text-textMain">缴费</p>
+      </div>
+      <div class="menu-item text-center">
+        <div class="w-12 h-12 mx-auto bg-orange-100 rounded-full flex items-center justify-center">
+          <i class="fas fa-tools text-warmOrange text-xl"></i>
+        </div>
+        <p class="text-xs mt-2 text-textMain">报修</p>
+      </div>
+      <div class="menu-item text-center">
+        <div class="w-12 h-12 mx-auto bg-green-100 rounded-full flex items-center justify-center">
+          <i class="fas fa-bullhorn text-green-600 text-xl"></i>
+        </div>
+        <p class="text-xs mt-2 text-textMain">公告</p>
+      </div>
+      <div class="menu-item text-center">
+        <div class="w-12 h-12 mx-auto bg-purple-100 rounded-full flex items-center justify-center">
+          <i class="fas fa-home text-purple-600 text-xl"></i>
+        </div>
+        <p class="text-xs mt-2 text-textMain">家业</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 最新公告 -->
+  <div class="mt-3 px-4">
+    <div class="card p-4">
+      <div class="flex items-center justify-between mb-3">
+        <h3 class="font-semibold text-textMain">最新公告</h3>
+        <button class="text-primary text-sm">查看更多 <i class="fas fa-chevron-right text-xs"></i></button>
+      </div>
+      <div class="space-y-3">
+        <div class="flex items-start gap-3 pb-3 border-b border-borderLight">
+          <i class="fas fa-bullhorn text-primary mt-1"></i>
+          <div class="flex-1">
+            <p class="text-sm text-textMain">关于小区停水通知</p>
+            <p class="text-xs text-textSub mt-1">2026-04-15</p>
+          </div>
+        </div>
+        <div class="flex items-start gap-3 pb-3 border-b border-borderLight">
+          <i class="fas fa-info-circle text-green-600 mt-1"></i>
+          <div class="flex-1">
+            <p class="text-sm text-textMain">电梯维护保养公告</p>
+            <p class="text-xs text-textSub mt-1">2026-04-14</p>
+          </div>
+        </div>
+        <div class="flex items-start gap-3">
+          <i class="fas fa-exclamation-triangle text-warmOrange mt-1"></i>
+          <div class="flex-1">
+            <p class="text-sm text-textMain">台风天气安全提示</p>
+            <p class="text-xs text-textSub mt-1">2026-04-13</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== 登录页 ==================== --><!-- ==================== 底部导航栏 ==================== -->
+<div id="tab-bar" class="fixed bottom-0 left-0 right-0 bg-white border-t border-borderLight px-2 py-2 z-40">
+  <div class="flex justify-around">
+    <button class="tab-btn active flex-1 text-center py-2" data-page="home">
+      <i class="fas fa-home text-xl"></i>
+      <p class="text-xs mt-1">首页</p>
+    </button>
+    <button class="tab-btn flex-1 text-center py-2" data-page="payment">
+      <i class="fas fa-file-invoice-dollar text-xl"></i>
+      <p class="text-xs mt-1">缴费</p>
+    </button>
+    <button class="tab-btn flex-1 text-center py-2" data-page="my">
+      <i class="fas fa-user text-xl"></i>
+      <p class="text-xs mt-1">我的</p>
+    </button>
+  </div>
+</div></div></div></section><section><h2 class="board-title">login</h2><div class="board"><div class="frame"><div id="page-login" class="page">
+  <div class="min-h-screen bg-gradient-to-b from-primary to-primaryDark flex flex-col items-center justify-center px-8">
+    <div class="text-white text-center mb-12">
+      <i class="fas fa-building text-6xl mb-4"></i>
+      <h1 class="text-2xl font-bold">华亚幸福家</h1>
+      <p class="text-white/80 mt-2">智慧社区 美好生活</p>
+    </div>
+
+    <div class="card w-full p-6">
+      <div class="mb-4">
+        <label class="block text-sm text-textSub mb-2">手机号</label>
+        <input type="tel" id="login-phone" placeholder="请输入手机号" maxlength="11"
+          class="input-field w-full px-4 py-3 rounded-lg text-textMain">
+      </div>
+      <div class="mb-6">
+        <label class="block text-sm text-textSub mb-2">验证码</label>
+        <div class="flex gap-2">
+          <input type="text" id="login-code" placeholder="请输入验证码" maxlength="6"
+            class="input-field flex-1 px-4 py-3 rounded-lg text-textMain">
+          <button id="send-code-btn"
+            class="btn-primary text-white px-4 py-3 rounded-lg text-sm whitespace-nowrap">
+            获取验证码
+          </button>
+        </div>
+      </div>
+      <button class="btn-primary w-full text-white py-3 rounded-lg font-semibold text-lg">
+        登录
+      </button>
+      <p class="text-xs text-textSub text-center mt-4">
+        登录即代表您同意 <a href="#" class="text-primary">《用户协议》</a> 和 <a href="#" class="text-primary">《隐私政策》</a>
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== 缴费页 ==================== --></div></div></section><section><h2 class="board-title">payment</h2><div class="board"><div class="frame"><div id="page-payment" class="page">
+  <div class="bg-gradient-to-r from-primary to-primaryDark text-white px-4 py-3 sticky top-0 z-40">
+    <h1 class="text-lg font-semibold text-center">费用缴纳</h1>
+  </div>
+
+  <div class="p-4">
+    <!-- 待缴账单 -->
+    <div class="card p-5 mb-4">
+      <p class="text-textSub text-sm">待缴金额</p>
+      <p class="text-4xl font-bold text-warmOrange mt-2">¥ 358.50</p>
+      <p class="text-xs text-textSub mt-2">共 4 项费用待缴纳</p>
+      <button class="btn-primary w-full text-white py-3 rounded-lg font-semibold mt-4">
+        立即缴费
+      </button>
+    </div>
+
+    <!-- 费用明细 -->
+    <div class="card mb-4">
+      <div class="p-4 border-b border-borderLight">
+        <h3 class="font-semibold text-textMain">费用明细</h3>
+      </div>
+      <div class="divide-y divide-borderLight">
+        <div class="p-4 flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+              <i class="fas fa-tint text-primary"></i>
+            </div>
+            <div>
+              <p class="text-sm font-medium text-textMain">水费</p>
+              <p class="text-xs text-textSub mt-0.5">2026-03</p>
+            </div>
+          </div>
+          <div class="text-right">
+            <p class="text-lg font-semibold text-textMain">¥ 45.00</p>
+            <span class="inline-block px-2 py-0.5 bg-red-100 text-red-600 text-xs rounded">未缴</span>
+          </div>
+        </div>
+        <div class="p-4 flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 bg-yellow-100 rounded-full flex items-center justify-center">
+              <i class="fas fa-bolt text-yellow-600"></i>
+            </div>
+            <div>
+              <p class="text-sm font-medium text-textMain">电费</p>
+              <p class="text-xs text-textSub mt-0.5">2026-03</p>
+            </div>
+          </div>
+          <div class="text-right">
+            <p class="text-lg font-semibold text-textMain">¥ 128.50</p>
+            <span class="inline-block px-2 py-0.5 bg-red-100 text-red-600 text-xs rounded">未缴</span>
+          </div>
+        </div>
+        <div class="p-4 flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
+              <i class="fas fa-building text-green-600"></i>
+            </div>
+            <div>
+              <p class="text-sm font-medium text-textMain">物业费</p>
+              <p class="text-xs text-textSub mt-0.5">2026-Q2</p>
+            </div>
+          </div>
+          <div class="text-right">
+            <p class="text-lg font-semibold text-textMain">¥ 165.00</p>
+            <span class="inline-block px-2 py-0.5 bg-red-100 text-red-600 text-xs rounded">未缴</span>
+          </div>
+        </div>
+        <div class="p-4 flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center">
+              <i class="fas fa-car text-purple-600"></i>
+            </div>
+            <div>
+              <p class="text-sm font-medium text-textMain">停车费</p>
+              <p class="text-xs text-textSub mt-0.5">2026-04</p>
+            </div>
+          </div>
+          <div class="text-right">
+            <p class="text-lg font-semibold text-textMain">¥ 20.00</p>
+            <span class="inline-block px-2 py-0.5 bg-red-100 text-red-600 text-xs rounded">未缴</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 缴费记录 -->
+    <div class="card">
+      <div class="p-4 border-b border-borderLight">
+        <h3 class="font-semibold text-textMain">缴费记录</h3>
+      </div>
+      <div class="divide-y divide-borderLight">
+        <div class="p-4 flex items-center justify-between">
+          <div>
+            <p class="text-sm font-medium text-textMain">物业费</p>
+            <p class="text-xs text-textSub mt-1">2026-03-15 14:30</p>
+          </div>
+          <div class="text-right">
+            <p class="text-lg font-semibold text-primary">¥ 165.00</p>
+            <span class="inline-block px-2 py-0.5 bg-green-100 text-green-600 text-xs rounded">已缴费</span>
+          </div>
+        </div>
+        <div class="p-4 flex items-center justify-between">
+          <div>
+            <p class="text-sm font-medium text-textMain">水费</p>
+            <p class="text-xs text-textSub mt-1">2026-02-10 09:15</p>
+          </div>
+          <div class="text-right">
+            <p class="text-lg font-semibold text-primary">¥ 38.00</p>
+            <span class="inline-block px-2 py-0.5 bg-green-100 text-green-600 text-xs rounded">已缴费</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== 立即缴费页 ==================== --><!-- ==================== 底部导航栏 ==================== -->
+<div id="tab-bar" class="fixed bottom-0 left-0 right-0 bg-white border-t border-borderLight px-2 py-2 z-40">
+  <div class="flex justify-around">
+    <button class="tab-btn active flex-1 text-center py-2" data-page="home">
+      <i class="fas fa-home text-xl"></i>
+      <p class="text-xs mt-1">首页</p>
+    </button>
+    <button class="tab-btn flex-1 text-center py-2" data-page="payment">
+      <i class="fas fa-file-invoice-dollar text-xl"></i>
+      <p class="text-xs mt-1">缴费</p>
+    </button>
+    <button class="tab-btn flex-1 text-center py-2" data-page="my">
+      <i class="fas fa-user text-xl"></i>
+      <p class="text-xs mt-1">我的</p>
+    </button>
+  </div>
+</div></div></div></section><section><h2 class="board-title">pay-now</h2><div class="board"><div class="frame"><div id="page-pay-now" class="page">
+  <div class="bg-gradient-to-r from-primary to-primaryDark text-white px-4 py-3 sticky top-0 z-40 flex items-center gap-3">
+    <button class="text-white"><i class="fas fa-chevron-left"></i></button>
+    <h1 class="text-lg font-semibold flex-1 text-center pr-6">立即缴费</h1>
+  </div>
+
+  <div class="p-4">
+    <!-- 选中项总计 -->
+    <div class="card p-5 mb-4">
+      <p class="text-textSub text-sm">待支付金额</p>
+      <p class="text-4xl font-bold text-warmOrange mt-2">¥ <span id="pay-total">358.50</span></p>
+      <p class="text-xs text-textSub mt-2">已选择 <span id="pay-count">4</span> 项费用</p>
+    </div>
+
+    <!-- 费用选择列表 -->
+    <div class="card">
+      <div class="p-4 border-b border-borderLight">
+        <h3 class="font-semibold text-textMain">选择缴费项目</h3>
+      </div>
+      <div class="divide-y divide-borderLight">
+        <div class="p-4 flex items-center gap-3">
+          <input type="checkbox" class="checkbox-custom pay-checkbox" data-price="45.00" data-name="水费" checked>
+          <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+            <i class="fas fa-tint text-primary"></i>
+          </div>
+          <div class="flex-1">
+            <p class="text-sm font-medium text-textMain">水费</p>
+            <p class="text-xs text-textSub mt-0.5">2026-03</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="text-textSub text-xs">¥</span>
+            <input type="number" class="pay-amount w-20 px-2 py-1 border border-borderLight rounded text-right text-textMain" value="45.00" min="10" step="0.01">
+          </div>
+        </div>
+        <div class="p-4 flex items-center gap-3">
+          <input type="checkbox" class="checkbox-custom pay-checkbox" data-price="128.50" data-name="电费" checked>
+          <div class="w-10 h-10 bg-yellow-100 rounded-full flex items-center justify-center">
+            <i class="fas fa-bolt text-yellow-600"></i>
+          </div>
+          <div class="flex-1">
+            <p class="text-sm font-medium text-textMain">电费</p>
+            <p class="text-xs text-textSub mt-0.5">2026-03</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="text-textSub text-xs">¥</span>
+            <input type="number" class="pay-amount w-20 px-2 py-1 border border-borderLight rounded text-right text-textMain" value="128.50" min="10" step="0.01">
+          </div>
+        </div>
+        <div class="p-4 flex items-center gap-3">
+          <input type="checkbox" class="checkbox-custom pay-checkbox" data-price="165.00" data-name="物业费" checked>
+          <div class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
+            <i class="fas fa-building text-green-600"></i>
+          </div>
+          <div class="flex-1">
+            <p class="text-sm font-medium text-textMain">物业费</p>
+            <p class="text-xs text-textSub mt-0.5">2026-Q2</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="text-textSub text-xs">¥</span>
+            <input type="number" class="pay-amount w-20 px-2 py-1 border border-borderLight rounded text-right text-textMain" value="165.00" min="10" step="0.01">
+          </div>
+        </div>
+        <div class="p-4 flex items-center gap-3">
+          <input type="checkbox" class="checkbox-custom pay-checkbox" data-price="20.00" data-name="停车费" checked>
+          <div class="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center">
+            <i class="fas fa-car text-purple-600"></i>
+          </div>
+          <div class="flex-1">
+            <p class="text-sm font-medium text-textMain">停车费</p>
+            <p class="text-xs text-textSub mt-0.5">2026-04</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="text-textSub text-xs">¥</span>
+            <input type="number" class="pay-amount w-20 px-2 py-1 border border-borderLight rounded text-right text-textMain" value="20.00" min="10" step="0.01">
+          </div>
+        </div>
+      </div>
+      <p class="p-4 text-xs text-textSub">
+        <i class="fas fa-info-circle mr-1"></i>
+        自定义金额最低不可低于 10 元
+      </p>
+    </div>
+
+    <!-- 支付方式 -->
+    <div class="card mt-4 mb-20">
+      <div class="p-4 border-b border-borderLight">
+        <h3 class="font-semibold text-textMain">支付方式</h3>
+      </div>
+      <div class="p-4 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <i class="fab fa-weixin text-green-500 text-2xl"></i>
+          <span class="text-textMain">微信支付</span>
+        </div>
+        <i class="fas fa-check-circle text-primary text-xl"></i>
+      </div>
+    </div>
+
+    <!-- 底部支付按钮 -->
+    <div class="fixed bottom-0 left-0 right-0 bg-white border-t border-borderLight p-4 pb-6">
+      <button class="btn-primary w-full text-white py-3 rounded-lg font-semibold text-lg">
+        确认支付 ¥<span id="pay-btn-total">358.50</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== 我的页面 ==================== --></div></div></section><section><h2 class="board-title">my</h2><div class="board"><div class="frame"><div id="page-my" class="page">
+  <div class="bg-gradient-to-b from-primary to-primaryDark text-white px-4 py-8 pb-12">
+    <div class="flex items-center gap-4">
+      <div class="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center">
+        <i class="fas fa-user text-3xl"></i>
+      </div>
+      <div>
+        <h2 class="text-xl font-bold">未登录</h2>
+        <p class="text-white/70 text-sm mt-1">登录后享受更多服务</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="p-4 -mt-8">
+    <!-- 我的房产 -->
+    <div class="card p-4 mb-3">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <i class="fas fa-home text-primary text-xl"></i>
+          <span class="text-textMain font-medium">我的房产</span>
+        </div>
+        <i class="fas fa-chevron-right text-textSub text-sm"></i>
+      </div>
+      <p class="text-xs text-textSub mt-2 ml-8">暂无绑定房产</p>
+    </div>
+
+    <!-- 我的缴费 -->
+    <div class="card p-4 mb-3">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <i class="fas fa-file-invoice-dollar text-green-600 text-xl"></i>
+          <span class="text-textMain font-medium">我的缴费</span>
+        </div>
+        <i class="fas fa-chevron-right text-textSub text-sm"></i>
+      </div>
+      <p class="text-xs text-textSub mt-2 ml-8">查看缴费记录</p>
+    </div>
+
+    <!-- 我的报修 -->
+    <div class="card p-4 mb-3">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <i class="fas fa-tools text-warmOrange text-xl"></i>
+          <span class="text-textMain font-medium">我的报修</span>
+        </div>
+        <i class="fas fa-chevron-right text-textSub text-sm"></i>
+      </div>
+      <p class="text-xs text-textSub mt-2 ml-8">查看报修记录</p>
+    </div>
+
+    <!-- 设置 -->
+    <div class="card">
+      <div class="divide-y divide-borderLight">
+        <div class="p-4 flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <i class="fas fa-info-circle text-primary text-lg"></i>
+            <span class="text-textMain">关于我们</span>
+          </div>
+          <i class="fas fa-chevron-right text-textSub text-sm"></i>
+        </div>
+        <div class="p-4 flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <i class="fas fa-cog text-gray-600 text-lg"></i>
+            <span class="text-textMain">设置</span>
+          </div>
+          <i class="fas fa-chevron-right text-textSub text-sm"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== 家业绑定页 ==================== --><!-- ==================== 底部导航栏 ==================== -->
+<div id="tab-bar" class="fixed bottom-0 left-0 right-0 bg-white border-t border-borderLight px-2 py-2 z-40">
+  <div class="flex justify-around">
+    <button class="tab-btn active flex-1 text-center py-2" data-page="home">
+      <i class="fas fa-home text-xl"></i>
+      <p class="text-xs mt-1">首页</p>
+    </button>
+    <button class="tab-btn flex-1 text-center py-2" data-page="payment">
+      <i class="fas fa-file-invoice-dollar text-xl"></i>
+      <p class="text-xs mt-1">缴费</p>
+    </button>
+    <button class="tab-btn flex-1 text-center py-2" data-page="my">
+      <i class="fas fa-user text-xl"></i>
+      <p class="text-xs mt-1">我的</p>
+    </button>
+  </div>
+</div></div></div></section><section><h2 class="board-title">property</h2><div class="board"><div class="frame"><div id="page-property" class="page">
+  <div class="bg-gradient-to-r from-primary to-primaryDark text-white px-4 py-3 sticky top-0 z-40 flex items-center gap-3">
+    <button class="text-white"><i class="fas fa-chevron-left"></i></button>
+    <h1 class="text-lg font-semibold flex-1 text-center pr-6">房产绑定</h1>
+  </div>
+
+  <div class="p-4">
+    <!-- 表单 -->
+    <div class="card p-4">
+      <div class="mb-4">
+        <label class="block text-sm text-textSub mb-2">选择小区</label>
+        <select class="input-field w-full px-4 py-3 rounded-lg text-textMain bg-white">
+          <option>请选择小区</option>
+          <option>华亚幸福城一期</option>
+          <option>华亚幸福城二期</option>
+          <option>华亚幸福城三期</option>
+        </select>
+      </div>
+      <div class="mb-4">
+        <label class="block text-sm text-textSub mb-2">选择栋数</label>
+        <select class="input-field w-full px-4 py-3 rounded-lg text-textMain bg-white">
+          <option>请选择栋数</option>
+          <option>1 栋</option>
+          <option>2 栋</option>
+          <option>3 栋</option>
+          <option>4 栋</option>
+          <option>5 栋</option>
+        </select>
+      </div>
+      <div class="mb-4">
+        <label class="block text-sm text-textSub mb-2">选择单元</label>
+        <select class="input-field w-full px-4 py-3 rounded-lg text-textMain bg-white">
+          <option>请选择单元</option>
+          <option>1 单元</option>
+          <option>2 单元</option>
+          <option>3 单元</option>
+        </select>
+      </div>
+      <div class="mb-4">
+        <label class="block text-sm text-textSub mb-2">选择楼层</label>
+        <select class="input-field w-full px-4 py-3 rounded-lg text-textMain bg-white">
+          <option>请选择楼层</option>
+          <option>1 层</option>
+          <option>2 层</option>
+          <option>3 层</option>
+          <option>4 层</option>
+          <option>5 层</option>
+          <option>6 层</option>
+          <option>7 层</option>
+          <option>8 层</option>
+          <option>9 层</option>
+          <option>10 层</option>
+        </select>
+      </div>
+      <div class="mb-4">
+        <label class="block text-sm text-textSub mb-2">选择门牌号</label>
+        <select class="input-field w-full px-4 py-3 rounded-lg text-textMain bg-white">
+          <option>请选择门牌号</option>
+          <option>101</option>
+          <option>102</option>
+          <option>201</option>
+          <option>202</option>
+          <option>301</option>
+          <option>302</option>
+        </select>
+      </div>
+      <div class="mb-4">
+        <label class="block text-sm text-textSub mb-2">业主姓名</label>
+        <input type="text" placeholder="请输入业主姓名"
+          class="input-field w-full px-4 py-3 rounded-lg text-textMain">
+      </div>
+      <div class="mb-4">
+        <label class="block text-sm text-textSub mb-2">手机号</label>
+        <input type="tel" placeholder="请输入手机号" maxlength="11"
+          class="input-field w-full px-4 py-3 rounded-lg text-textMain">
+      </div>
+      <button class="btn-primary w-full text-white py-3 rounded-lg font-semibold">
+        绑定房产
+      </button>
+      <p class="text-xs text-textSub text-center mt-3">
+        绑定申请将在 1-3 个工作日内审核，审核结果将短信通知
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== 报修页 ==================== --></div></div></section><section><h2 class="board-title">repair</h2><div class="board"><div class="frame"><div id="page-repair" class="page">
+  <div class="bg-gradient-to-r from-primary to-primaryDark text-white px-4 py-3 sticky top-0 z-40 flex items-center gap-3">
+    <button class="text-white"><i class="fas fa-chevron-left"></i></button>
+    <h1 class="text-lg font-semibold flex-1 text-center pr-6">报修服务</h1>
+  </div>
+
+  <div class="p-4">
+    <!-- 报修入口 -->
+    <div class="card p-6 mb-4 text-center">
+      <div class="w-20 h-20 mx-auto bg-warmOrange/10 rounded-full flex items-center justify-center">
+        <i class="fas fa-tools text-warmOrange text-3xl"></i>
+      </div>
+      <h2 class="text-lg font-semibold text-textMain mt-4">需要报修？</h2>
+      <p class="text-textSub text-sm mt-2">专业师傅快速上门，为您解决家居问题</p>
+      <button class="btn-primary w-full text-white py-3 rounded-lg font-semibold mt-4">
+        <i class="fas fa-plus mr-2"></i>我要报修
+      </button>
+    </div>
+
+    <!-- 报修记录 -->
+    <div class="card">
+      <div class="p-4 border-b border-borderLight">
+        <h3 class="font-semibold text-textMain">我的报修记录</h3>
+      </div>
+      <div class="divide-y divide-borderLight">
+        <div class="p-4">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-sm font-medium text-textMain">客厅灯不亮</span>
+            <span class="px-2 py-0.5 bg-yellow-100 text-yellow-600 text-xs rounded">处理中</span>
+          </div>
+          <p class="text-xs text-textSub">报修时间：2026-04-14 10:30</p>
+          <p class="text-xs text-textSub mt-1">师傅：张师傅 138****5678</p>
+        </div>
+        <div class="p-4">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-sm font-medium text-textMain">卫生间漏水</span>
+            <span class="px-2 py-0.5 bg-green-100 text-green-600 text-xs rounded">已完成</span>
+          </div>
+          <p class="text-xs text-textSub">报修时间：2026-04-10 15:20</p>
+          <p class="text-xs text-textSub mt-1">完成时间：2026-04-11 09:00</p>
+        </div>
+        <div class="p-4">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-sm font-medium text-textMain">空调不制冷</span>
+            <span class="px-2 py-0.5 bg-gray-100 text-gray-600 text-xs rounded">已撤回</span>
+          </div>
+          <p class="text-xs text-textSub">报修时间：2026-04-08 09:15</p>
+          <p class="text-xs text-textSub mt-1">撤回时间：2026-04-08 14:30</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== 公告详情页 ==================== --></div></div></section><section><h2 class="board-title">notice-detail</h2><div class="board"><div class="frame"><div id="page-notice-detail" class="page">
+  <div class="bg-gradient-to-r from-primary to-primaryDark text-white px-4 py-3 sticky top-0 z-40 flex items-center gap-3">
+    <button class="text-white"><i class="fas fa-chevron-left"></i></button>
+    <h1 class="text-lg font-semibold flex-1 text-center pr-6">公告详情</h1>
+  </div>
+
+  <div class="p-4">
+    <div class="card p-4">
+      <h2 class="text-lg font-bold text-textMain mb-2">关于小区停水通知</h2>
+      <div class="flex items-center gap-4 text-xs text-textSub mb-4">
+        <span><i class="fas fa-calendar mr-1"></i>2026-04-15</span>
+        <span><i class="fas fa-building mr-1"></i>物业服务中心</span>
+      </div>
+      <div class="border-t border-borderLight pt-4">
+        <img src="https://picsum.photos/seed/water-notice/600/300" alt="停水通知" class="w-full rounded-lg mb-4">
+        <div class="prose prose-sm text-textMain">
+          <p class="mb-3">尊敬的各位业主/住户：</p>
+          <p class="mb-3">因小区供水管道维修，本小区将于以下时间段停水：</p>
+          <p class="mb-3"><strong>停水时间：</strong>2026 年 4 月 16 日 09:00 - 17:00</p>
+          <p class="mb-3"><strong>停水范围：</strong>全小区所有楼栋</p>
+          <p class="mb-3">请各位住户提前做好储水准备，停水期间请关闭水龙头，避免来水后造成浪费。</p>
+          <p class="mb-3">如有疑问，请致电物业服务中心：0755-12345678</p>
+          <p class="mb-3">给您带来的不便，敬请谅解！</p>
+          <p class="text-right mt-4">华亚幸福家物业服务中心</p>
+          <p class="text-right">2026 年 4 月 15 日</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 报修 Modal -->
+<div id="repair-modal" class="fixed inset-0 bg-black/50 z-50 hidden">
+  <div class="absolute bottom-0 left-0 right-0 bg-white rounded-t-2xl max-h-[90vh] overflow-y-auto modal">
+    <div class="p-4 border-b border-borderLight flex items-center justify-between">
+      <h3 class="font-semibold text-textMain">提交报修</h3>
+      <button class="text-textSub"><i class="fas fa-times text-lg"></i></button>
+    </div>
+    <div class="p-4">
+      <div class="mb-4">
+        <label class="block text-sm text-textSub mb-2">报修类型</label>
+        <select class="input-field w-full px-4 py-3 rounded-lg text-textMain bg-white">
+          <option>请选择类型</option>
+          <option>水电维修</option>
+          <option>门窗维修</option>
+          <option>家电故障</option>
+          <option>管道疏通</option>
+          <option>其他</option>
+        </select>
+      </div>
+      <div class="mb-4">
+        <label class="block text-sm text-textSub mb-2">问题描述</label>
+        <textarea placeholder="请详细描述问题..." rows="4"
+          class="input-field w-full px-4 py-3 rounded-lg text-textMain resize-none"></textarea>
+      </div>
+      <div class="mb-4">
+        <label class="block text-sm text-textSub mb-2">上传图片</label>
+        <div class="flex gap-2">
+          <div class="w-20 h-20 border-2 border-dashed border-borderLight rounded-lg flex items-center justify-center">
+            <i class="fas fa-camera text-textSub text-xl"></i>
+          </div>
+          <div class="w-20 h-20 border-2 border-dashed border-borderLight rounded-lg flex items-center justify-center">
+            <i class="fas fa-camera text-textSub text-xl"></i>
+          </div>
+          <div class="w-20 h-20 border-2 border-dashed border-borderLight rounded-lg flex items-center justify-center">
+            <i class="fas fa-camera text-textSub text-xl"></i>
+          </div>
+        </div>
+      </div>
+      <div class="mb-4">
+        <label class="block text-sm text-textSub mb-2">预约时间</label>
+        <input type="datetime-local" class="input-field w-full px-4 py-3 rounded-lg text-textMain">
+      </div>
+      <div class="mb-4">
+        <label class="block text-sm text-textSub mb-2">联系方式</label>
+        <input type="tel" placeholder="请输入手机号" maxlength="11"
+          class="input-field w-full px-4 py-3 rounded-lg text-textMain">
+      </div>
+      <button class="btn-primary w-full text-white py-3 rounded-lg font-semibold">
+        提交报修
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- 报修详情 Modal -->
+<div id="repair-detail-modal" class="fixed inset-0 bg-black/50 z-50 hidden">
+  <div class="absolute bottom-0 left-0 right-0 bg-white rounded-t-2xl max-h-[90vh] overflow-y-auto modal">
+    <div class="p-4 border-b border-borderLight flex items-center justify-between">
+      <h3 class="font-semibold text-textMain">报修详情</h3>
+      <button class="text-textSub"><i class="fas fa-times text-lg"></i></button>
+    </div>
+    <div class="p-4">
+      <div class="flex items-center justify-between mb-4">
+        <h4 id="detail-title" class="text-lg font-semibold text-textMain">客厅灯不亮</h4>
+        <span id="detail-status" class="px-3 py-1 text-sm rounded">处理中</span>
+      </div>
+      <div class="space-y-3 text-sm">
+        <div class="flex items-center gap-2 text-textSub">
+          <i class="fas fa-calendar w-5"></i>
+          <span>报修时间：2026-04-14 10:30</span>
+        </div>
+        <div class="flex items-center gap-2 text-textSub">
+          <i class="fas fa-user w-5"></i>
+          <span>师傅：张师傅 138****5678</span>
+        </div>
+        <div class="flex items-center gap-2 text-textSub">
+          <i class="fas fa-map-marker-alt w-5"></i>
+          <span>地址：华亚幸福城一期 3 栋 201</span>
+        </div>
+      </div>
+      <div class="mt-4">
+        <label class="block text-sm text-textSub mb-2">问题描述</label>
+        <p class="text-textMain bg-bgGray p-3 rounded-lg">客厅主灯突然不亮了，开关试过多次没反应，其他房间正常。</p>
+      </div>
+      <div class="mt-4">
+        <label class="block text-sm text-textSub mb-2">上传图片</label>
+        <div class="flex gap-2">
+          <img src="https://picsum.photos/seed/repair1/80/80" class="w-20 h-20 rounded-lg object-cover">
+          <img src="https://picsum.photos/seed/repair2/80/80" class="w-20 h-20 rounded-lg object-cover">
+        </div>
+      </div>
+      <div id="withdraw-btn-container" class="mt-6">
+        <button class="w-full border border-borderLight text-textSub py-3 rounded-lg font-semibold">
+          撤回报修
+        </button>
+      </div>
+    </div>
+  </div>
+</div></div></div></section></main></body></html>

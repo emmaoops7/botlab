@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>pay-now - 华亚幸福家</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script>tailwind.config={theme:{extend:{colors:{primary:'#1890FF',primaryLight:'#40A9FF',primaryDark:'#096DD9',warmOrange:'#FF6B35',bgGray:'#F5F7FA',textMain:'#1F2937',textSub:'#6B7280',borderLight:'#E5E7EB'}}}}</script>
+  <link rel="stylesheet" href="../assets/common.css">
+</head>
+<body class="bg-bgGray" data-page="pay-now">
+<div class="app-shell">
+<div id="toast" class="toast fixed top-4 left-1/2 -translate-x-1/2 bg-gray-800 text-white px-6 py-3 rounded-lg shadow-lg z-50 whitespace-nowrap"></div>
+<div id="page-pay-now" class="page">
+  <div class="bg-gradient-to-r from-primary to-primaryDark text-white px-4 py-3 sticky top-0 z-40 flex items-center gap-3">
+    <button onclick="navBack()" class="text-white"><i class="fas fa-chevron-left"></i></button>
+    <h1 class="text-lg font-semibold flex-1 text-center pr-6">立即缴费</h1>
+  </div>
+
+  <div class="p-4">
+    <!-- 选中项总计 -->
+    <div class="card p-5 mb-4">
+      <p class="text-textSub text-sm">待支付金额</p>
+      <p class="text-4xl font-bold text-warmOrange mt-2">¥ <span id="pay-total">358.50</span></p>
+      <p class="text-xs text-textSub mt-2">已选择 <span id="pay-count">4</span> 项费用</p>
+    </div>
+
+    <!-- 费用选择列表 -->
+    <div class="card">
+      <div class="p-4 border-b border-borderLight">
+        <h3 class="font-semibold text-textMain">选择缴费项目</h3>
+      </div>
+      <div class="divide-y divide-borderLight">
+        <div class="p-4 flex items-center gap-3">
+          <input type="checkbox" class="checkbox-custom pay-checkbox" data-price="45.00" data-name="水费" checked>
+          <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+            <i class="fas fa-tint text-primary"></i>
+          </div>
+          <div class="flex-1">
+            <p class="text-sm font-medium text-textMain">水费</p>
+            <p class="text-xs text-textSub mt-0.5">2026-03</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="text-textSub text-xs">¥</span>
+            <input type="number" class="pay-amount w-20 px-2 py-1 border border-borderLight rounded text-right text-textMain" value="45.00" min="10" step="0.01">
+          </div>
+        </div>
+        <div class="p-4 flex items-center gap-3">
+          <input type="checkbox" class="checkbox-custom pay-checkbox" data-price="128.50" data-name="电费" checked>
+          <div class="w-10 h-10 bg-yellow-100 rounded-full flex items-center justify-center">
+            <i class="fas fa-bolt text-yellow-600"></i>
+          </div>
+          <div class="flex-1">
+            <p class="text-sm font-medium text-textMain">电费</p>
+            <p class="text-xs text-textSub mt-0.5">2026-03</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="text-textSub text-xs">¥</span>
+            <input type="number" class="pay-amount w-20 px-2 py-1 border border-borderLight rounded text-right text-textMain" value="128.50" min="10" step="0.01">
+          </div>
+        </div>
+        <div class="p-4 flex items-center gap-3">
+          <input type="checkbox" class="checkbox-custom pay-checkbox" data-price="165.00" data-name="物业费" checked>
+          <div class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
+            <i class="fas fa-building text-green-600"></i>
+          </div>
+          <div class="flex-1">
+            <p class="text-sm font-medium text-textMain">物业费</p>
+            <p class="text-xs text-textSub mt-0.5">2026-Q2</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="text-textSub text-xs">¥</span>
+            <input type="number" class="pay-amount w-20 px-2 py-1 border border-borderLight rounded text-right text-textMain" value="165.00" min="10" step="0.01">
+          </div>
+        </div>
+        <div class="p-4 flex items-center gap-3">
+          <input type="checkbox" class="checkbox-custom pay-checkbox" data-price="20.00" data-name="停车费" checked>
+          <div class="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center">
+            <i class="fas fa-car text-purple-600"></i>
+          </div>
+          <div class="flex-1">
+            <p class="text-sm font-medium text-textMain">停车费</p>
+            <p class="text-xs text-textSub mt-0.5">2026-04</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="text-textSub text-xs">¥</span>
+            <input type="number" class="pay-amount w-20 px-2 py-1 border border-borderLight rounded text-right text-textMain" value="20.00" min="10" step="0.01">
+          </div>
+        </div>
+      </div>
+      <p class="p-4 text-xs text-textSub">
+        <i class="fas fa-info-circle mr-1"></i>
+        自定义金额最低不可低于 10 元
+      </p>
+    </div>
+
+    <!-- 支付方式 -->
+    <div class="card mt-4 mb-20">
+      <div class="p-4 border-b border-borderLight">
+        <h3 class="font-semibold text-textMain">支付方式</h3>
+      </div>
+      <div class="p-4 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <i class="fab fa-weixin text-green-500 text-2xl"></i>
+          <span class="text-textMain">微信支付</span>
+        </div>
+        <i class="fas fa-check-circle text-primary text-xl"></i>
+      </div>
+    </div>
+
+    <!-- 底部支付按钮 -->
+    <div class="fixed bottom-0 left-0 right-0 bg-white border-t border-borderLight p-4 pb-6">
+      <button onclick="doPay()" class="btn-primary w-full text-white py-3 rounded-lg font-semibold text-lg">
+        确认支付 ¥<span id="pay-btn-total">358.50</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== 我的页面 ==================== -->
+
+</div>
+<script src="../assets/app.js"></script>
+</body>
+</html>

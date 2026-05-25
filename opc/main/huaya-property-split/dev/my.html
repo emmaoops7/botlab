@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>my - 华亚幸福家</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script>tailwind.config={theme:{extend:{colors:{primary:'#1890FF',primaryLight:'#40A9FF',primaryDark:'#096DD9',warmOrange:'#FF6B35',bgGray:'#F5F7FA',textMain:'#1F2937',textSub:'#6B7280',borderLight:'#E5E7EB'}}}}</script>
+  <link rel="stylesheet" href="../assets/common.css">
+</head>
+<body class="bg-bgGray" data-page="my">
+<div class="app-shell">
+<div id="toast" class="toast fixed top-4 left-1/2 -translate-x-1/2 bg-gray-800 text-white px-6 py-3 rounded-lg shadow-lg z-50 whitespace-nowrap"></div>
+<div id="page-my" class="page">
+  <div class="bg-gradient-to-b from-primary to-primaryDark text-white px-4 py-8 pb-12">
+    <div class="flex items-center gap-4">
+      <div class="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center">
+        <i class="fas fa-user text-3xl"></i>
+      </div>
+      <div>
+        <h2 class="text-xl font-bold">未登录</h2>
+        <p class="text-white/70 text-sm mt-1">登录后享受更多服务</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="p-4 -mt-8">
+    <!-- 我的房产 -->
+    <div class="card p-4 mb-3">
+      <div class="flex items-center justify-between" onclick="navTo('property')">
+        <div class="flex items-center gap-3">
+          <i class="fas fa-home text-primary text-xl"></i>
+          <span class="text-textMain font-medium">我的房产</span>
+        </div>
+        <i class="fas fa-chevron-right text-textSub text-sm"></i>
+      </div>
+      <p class="text-xs text-textSub mt-2 ml-8">暂无绑定房产</p>
+    </div>
+
+    <!-- 我的缴费 -->
+    <div class="card p-4 mb-3">
+      <div class="flex items-center justify-between" onclick="navTo('payment')">
+        <div class="flex items-center gap-3">
+          <i class="fas fa-file-invoice-dollar text-green-600 text-xl"></i>
+          <span class="text-textMain font-medium">我的缴费</span>
+        </div>
+        <i class="fas fa-chevron-right text-textSub text-sm"></i>
+      </div>
+      <p class="text-xs text-textSub mt-2 ml-8">查看缴费记录</p>
+    </div>
+
+    <!-- 我的报修 -->
+    <div class="card p-4 mb-3">
+      <div class="flex items-center justify-between" onclick="navTo('repair')">
+        <div class="flex items-center gap-3">
+          <i class="fas fa-tools text-warmOrange text-xl"></i>
+          <span class="text-textMain font-medium">我的报修</span>
+        </div>
+        <i class="fas fa-chevron-right text-textSub text-sm"></i>
+      </div>
+      <p class="text-xs text-textSub mt-2 ml-8">查看报修记录</p>
+    </div>
+
+    <!-- 设置 -->
+    <div class="card">
+      <div class="divide-y divide-borderLight">
+        <div class="p-4 flex items-center justify-between" onclick="showToast('关于我们')">
+          <div class="flex items-center gap-3">
+            <i class="fas fa-info-circle text-primary text-lg"></i>
+            <span class="text-textMain">关于我们</span>
+          </div>
+          <i class="fas fa-chevron-right text-textSub text-sm"></i>
+        </div>
+        <div class="p-4 flex items-center justify-between" onclick="showToast('设置')">
+          <div class="flex items-center gap-3">
+            <i class="fas fa-cog text-gray-600 text-lg"></i>
+            <span class="text-textMain">设置</span>
+          </div>
+          <i class="fas fa-chevron-right text-textSub text-sm"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== 家业绑定页 ==================== -->
+<!-- ==================== 底部导航栏 ==================== -->
+<div id="tab-bar" class="fixed bottom-0 left-0 right-0 bg-white border-t border-borderLight px-2 py-2 z-40">
+  <div class="flex justify-around">
+    <button class="tab-btn active flex-1 text-center py-2" data-page="home" onclick="navTo('home')">
+      <i class="fas fa-home text-xl"></i>
+      <p class="text-xs mt-1">首页</p>
+    </button>
+    <button class="tab-btn flex-1 text-center py-2" data-page="payment" onclick="navTo('payment')">
+      <i class="fas fa-file-invoice-dollar text-xl"></i>
+      <p class="text-xs mt-1">缴费</p>
+    </button>
+    <button class="tab-btn flex-1 text-center py-2" data-page="my" onclick="navTo('my')">
+      <i class="fas fa-user text-xl"></i>
+      <p class="text-xs mt-1">我的</p>
+    </button>
+  </div>
+</div>
+</div>
+<script src="../assets/app.js"></script>
+</body>
+</html>

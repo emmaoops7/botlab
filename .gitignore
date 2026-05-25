@@ -1,3 +1,12 @@
 __pycache__/
 *.pyc
-tuya-smart-control/scripts/tests/
+.env
+*.env
+.secrets/
+.openclaw/
+memory/
+state/
+tmp/
+tmp-images/
+*.zip
+*.bak*

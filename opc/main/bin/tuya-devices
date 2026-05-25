@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+set -euo pipefail
+if [ "$#" -gt 0 ]; then
+  /root/clawd/tuya devices --home "$1"
+else
+  /root/clawd/tuya devices
+fi

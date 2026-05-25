@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>property - 华亚幸福家</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script>tailwind.config={theme:{extend:{colors:{primary:'#1890FF',primaryLight:'#40A9FF',primaryDark:'#096DD9',warmOrange:'#FF6B35',bgGray:'#F5F7FA',textMain:'#1F2937',textSub:'#6B7280',borderLight:'#E5E7EB'}}}}</script>
+  <link rel="stylesheet" href="../assets/common.css">
+</head>
+<body class="bg-bgGray" data-page="property">
+<div class="app-shell">
+<div id="toast" class="toast fixed top-4 left-1/2 -translate-x-1/2 bg-gray-800 text-white px-6 py-3 rounded-lg shadow-lg z-50 whitespace-nowrap"></div>
+<div id="page-property" class="page">
+  <div class="bg-gradient-to-r from-primary to-primaryDark text-white px-4 py-3 sticky top-0 z-40 flex items-center gap-3">
+    <button onclick="navBack()" class="text-white"><i class="fas fa-chevron-left"></i></button>
+    <h1 class="text-lg font-semibold flex-1 text-center pr-6">房产绑定</h1>
+  </div>
+
+  <div class="p-4">
+    <!-- 表单 -->
+    <div class="card p-4">
+      <div class="mb-4">
+        <label class="block text-sm text-textSub mb-2">选择小区</label>
+        <select class="input-field w-full px-4 py-3 rounded-lg text-textMain bg-white">
+          <option>请选择小区</option>
+          <option>华亚幸福城一期</option>
+          <option>华亚幸福城二期</option>
+          <option>华亚幸福城三期</option>
+        </select>
+      </div>
+      <div class="mb-4">
+        <label class="block text-sm text-textSub mb-2">选择栋数</label>
+        <select class="input-field w-full px-4 py-3 rounded-lg text-textMain bg-white">
+          <option>请选择栋数</option>
+          <option>1 栋</option>
+          <option>2 栋</option>
+          <option>3 栋</option>
+          <option>4 栋</option>
+          <option>5 栋</option>
+        </select>
+      </div>
+      <div class="mb-4">
+        <label class="block text-sm text-textSub mb-2">选择单元</label>
+        <select class="input-field w-full px-4 py-3 rounded-lg text-textMain bg-white">
+          <option>请选择单元</option>
+          <option>1 单元</option>
+          <option>2 单元</option>
+          <option>3 单元</option>
+        </select>
+      </div>
+      <div class="mb-4">
+        <label class="block text-sm text-textSub mb-2">选择楼层</label>
+        <select class="input-field w-full px-4 py-3 rounded-lg text-textMain bg-white">
+          <option>请选择楼层</option>
+          <option>1 层</option>
+          <option>2 层</option>
+          <option>3 层</option>
+          <option>4 层</option>
+          <option>5 层</option>
+          <option>6 层</option>
+          <option>7 层</option>
+          <option>8 层</option>
+          <option>9 层</option>
+          <option>10 层</option>
+        </select>
+      </div>
+      <div class="mb-4">
+        <label class="block text-sm text-textSub mb-2">选择门牌号</label>
+        <select class="input-field w-full px-4 py-3 rounded-lg text-textMain bg-white">
+          <option>请选择门牌号</option>
+          <option>101</option>
+          <option>102</option>
+          <option>201</option>
+          <option>202</option>
+          <option>301</option>
+          <option>302</option>
+        </select>
+      </div>
+      <div class="mb-4">
+        <label class="block text-sm text-textSub mb-2">业主姓名</label>
+        <input type="text" placeholder="请输入业主姓名"
+          class="input-field w-full px-4 py-3 rounded-lg text-textMain">
+      </div>
+      <div class="mb-4">
+        <label class="block text-sm text-textSub mb-2">手机号</label>
+        <input type="tel" placeholder="请输入手机号" maxlength="11"
+          class="input-field w-full px-4 py-3 rounded-lg text-textMain">
+      </div>
+      <button onclick="showToast('绑定申请已提交')" class="btn-primary w-full text-white py-3 rounded-lg font-semibold">
+        绑定房产
+      </button>
+      <p class="text-xs text-textSub text-center mt-3">
+        绑定申请将在 1-3 个工作日内审核，审核结果将短信通知
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== 报修页 ==================== -->
+
+</div>
+<script src="../assets/app.js"></script>
+</body>
+</html>
