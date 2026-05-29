@@ -1,7 +1,7 @@
 ---
 name: tuya-smart-control
-description: Control Tuya smart home devices via natural language. Use when the user asks to control smart devices (turn on/off lights, AC, plugs, adjust brightness/temperature/mode), query device status or list devices, manage homes and rooms, rename devices, check weather by location, send notifications (SMS, voice call, email, or App push), view device data statistics (e.g. energy/power consumption), capture snapshots/short videos from IPC cameras, or subscribe to real-time device events (property changes, online/offline status) via WebSocket. Requires TUYA_API_KEY.
-metadata: { "openclaw": { "version": "1.0.0", "emoji": "🏠", "requires": { "env": ["TUYA_API_KEY"], "pip": ["requests>=2.28.0", "websockets>=12.0"] }, "primaryEnv": "TUYA_API_KEY" } }
+description: Control Tuya smart home devices via natural language. Use when the user asks to control smart devices (turn on/off lights, AC, plugs, adjust brightness/temperature/mode), query device status or list devices, manage homes and rooms, rename devices, check weather by location, send notifications (SMS, voice call, email, or App push), view device data statistics (e.g. energy/power consumption), capture snapshots/short videos from IPC cameras, or subscribe to real-time device events (property changes, online/offline status) via WebSocket. Supports Cloud OpenAPI (recommended) or legacy Bearer API.
+metadata: { "openclaw": { "version": "1.0.0", "emoji": "🏠", "requires": { "env": ["TUYA_ACCESS_ID", "TUYA_ACCESS_SECRET", "TUYA_ENDPOINT"], "envOptional": ["TUYA_API_KEY", "TUYA_UID"], "pip": ["requests>=2.28.0", "websockets>=12.0"] }, "primaryEnv": "TUYA_ACCESS_ID" } }
 ---
 
 # Tuya Smart Home Device Control Skill
@@ -16,19 +16,42 @@ metadata: { "openclaw": { "version": "1.0.0", "emoji": "🏠", "requires": { "en
 - **Python SDK**: See `scripts/tuya_api.py`
 - **Device Message Client**: See `scripts/tuya_device_mq_client.py` (real-time WebSocket subscription)
 
-## Environment Variable Configuration
+## Authentication Options
 
-Set the following environment variable before use:
+This skill supports two authentication routes:
+
+| Route | Credentials | Use Case |
+|-------|-------------|----------|
+| **Cloud OpenAPI (Recommended)** | `TUYA_ACCESS_ID` + `TUYA_ACCESS_SECRET` + `TUYA_ENDPOINT` | Full API access, IR control, Cloud Development APIs |
+| **Bearer API (Legacy)** | `TUYA_API_KEY` | Simple device control via 2C end-user APIs |
+
+**We recommend the Cloud OpenAPI route** for new projects. It provides broader API access and is the official Tuya Cloud Development path.
+
+### Option 1: Cloud OpenAPI (Recommended)
+
+Set these environment variables:
 
 ```bash
-export TUYA_API_KEY="your-tuya-api-key"
+export TUYA_ACCESS_ID="your_access_id"
+export TUYA_ACCESS_SECRET="your_access_secret"
+export TUYA_ENDPOINT="https://openapi.tuyacn.com"  # match your data center
+```
+
+See [QUICKSTART.md](../QUICKSTART.md) for a step-by-step guide, or [docs/TUYA_CLOUD_SETUP.md](docs/TUYA_CLOUD_SETUP.md) for detailed Cloud Project setup.
+
+### Option 2: Bearer API (Legacy)
+
+Set the API key environment variable:
+
+```bash
+export TUYA_API_KEY="sk-your-api-key-here"
 # TUYA_BASE_URL is optional — auto-detected from API key prefix
 # Override only if needed: export TUYA_BASE_URL="https://openapi.tuyaus.com"
 ```
 
 The same `TUYA_API_KEY` is used for both the REST API and WebSocket message subscription. The WebSocket URI is auto-detected from the API key prefix (same 7 data centers as the REST API). See `references/device-message.md` for the full mapping table.
 
-The skill will not load if the `TUYA_API_KEY` environment variable is missing.
+**Note**: The skill requires at least one authentication method to be configured. Cloud OpenAPI is preferred for full functionality.
 
 ## Usage
 

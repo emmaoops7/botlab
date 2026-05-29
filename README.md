@@ -27,7 +27,32 @@ tuya-smart-control is an official AI Agent skill for the OpenClaw platform, buil
 
 ## Getting Started
 
-### 1. Obtain an API Key
+### Authentication Options
+
+This skill supports two authentication routes:
+
+| Route | Credentials | Use Case |
+|-------|-------------|----------|
+| **Cloud OpenAPI (Recommended)** | `TUYA_ACCESS_ID` + `TUYA_ACCESS_SECRET` + `TUYA_ENDPOINT` | Full API access, IR control, Cloud Development APIs |
+| **Bearer API (Legacy)** | `TUYA_API_KEY` | Simple device control via 2C end-user APIs |
+
+**We recommend the Cloud OpenAPI route** for new projects. It provides broader API access and is the official Tuya Cloud Development path.
+
+### 1. Set Up Tuya Cloud Project (Recommended)
+
+1. Go to [Tuya IoT Platform](https://iot.tuya.com/) and create a Cloud Project
+2. Get your **Access ID** and **Access Secret** from the project's Authorization Key page
+3. Link your Tuya app account to the Cloud Project
+4. Set environment variables:
+   ```bash
+   export TUYA_ACCESS_ID="your_access_id"
+   export TUYA_ACCESS_SECRET="your_access_secret"
+   export TUYA_ENDPOINT="https://openapi.tuyacn.com"  # match your data center
+   ```
+
+See [QUICKSTART.md](QUICKSTART.md) for a step-by-step guide, or [tuya-smart-control/docs/TUYA_CLOUD_SETUP.md](tuya-smart-control/docs/TUYA_CLOUD_SETUP.md) for detailed Cloud Project setup.
+
+### 2. Alternative: Obtain a Bearer API Key (Legacy)
 
 | User Type | Where to Get |
 |-----------|-------------|
@@ -36,7 +61,11 @@ tuya-smart-control is an official AI Agent skill for the OpenClaw platform, buil
 
 > The API Key format is `sk-<PREFIX><rest>`, where the prefix is used to automatically identify the data center. Make sure the API Key region matches your Tuya account registration region.
 
-### 2. API Key Prefix to Data Center Mapping
+```bash
+export TUYA_API_KEY="sk-your-api-key-here"
+```
+
+### 3. API Key Prefix to Data Center Mapping
 
 The first two characters after `sk-` in the API Key are automatically mapped to the corresponding data center:
 
@@ -50,7 +79,7 @@ The first two characters after `sk-` in the API Key are automatically mapped to 
 | `WE` | Western Europe Data Center | `https://openapi-weaz.tuyaeu.com` | `wss://wsmsgs.iot-weu.com` |
 | `SG` | Singapore Data Center | `https://openapi-sg.iotbing.com` | `wss://wsmsgs.iot-sea.com` |
 
-### 3. Install the Skill in OpenClaw
+### 4. Install the Skill in OpenClaw
 
 1. Add the `tuya-smart-control` skill on the OpenClaw platform
 2. Enter your `TUYA_API_KEY` in the skill configuration (required)
